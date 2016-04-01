@@ -1,11 +1,17 @@
+Plugin.registerCompiler({
+  extensions: ['html'],
+  archMatching: 'web',
+  isTemplate: true
+}, () => new PolymerCachingHtmlCompiler("synthesis", parseHtml, dissectHtml));
+
+
 var parse5 = Npm.require('parse5');
 
-
 var throwCompileError = TemplatingTools.throwCompileError;
+
 class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 
   getCacheKey(inputFile) {
-    // Note: we include the path for files that are renamed
     return inputFile.getSourceHash();
   }
 
@@ -37,18 +43,6 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
     }
   }
 };
-function  addBodyAttrs(attrs,results,TemplatingTools) {
-  Object.keys(attrs).forEach(function(attr) {
-    const val = attrs[attr];
-    if (results.bodyAttrs.hasOwnProperty(attr) && results.bodyAttrs[attr] !== val) {
-      throwCompileError(
-        `<body> declarations have conflicting values for the '${attr}' attribute.`);
-    }
-
-    results.bodyAttrs[attr] = val;
-  });
-  return results;
-}
 
 parseHtml = function(arg){
   var contents = arg.contents
@@ -57,12 +51,7 @@ parseHtml = function(arg){
   return parsed;
 }
 var dissectHtml = function(document){
-  var dissected = {head:"",body:"",js:"console.log('ready')"};
-  //tags.forEach(function(tag){
-  ////console.log(tag.tagName);
-  //});
-  //var head = document.childNodes[0].childNodes[0];
-  //var body = document.childNodes[0].childNodes[1];
+  var dissected = {head:"",body:"",js:"",bodyAttrs:{}};
 
   document.childNodes.forEach(function(child){
     if(child.nodeName==="#documentType"){
@@ -75,6 +64,15 @@ var dissectHtml = function(document){
         }
         else if(child.nodeName==="body"){
           var body = child;
+          body.attrs.forEach(function(attr) {
+            if (dissected.bodyAttrs.hasOwnProperty(attr.name) && dissected.bodyAttrs[attr.name] !== attr.value) {
+              throwCompileError(
+                `<body> declarations have conflicting values for the '${attr.name}' attribute.`);
+            }
+
+            dissected.bodyAttrs[attr.name] = attr.value;
+          });
+
           body.childNodes = _.filter(body.childNodes,function(child){
             if(child.nodeName === "script"){
               dissected.js += parse5.serialize(child)
@@ -92,10 +90,4 @@ var dissectHtml = function(document){
 
   return dissected;
 }
-Plugin.registerCompiler({
-  extensions: ['html'],
-  archMatching: 'web',
-  isTemplate: false
-}, () => new PolymerCachingHtmlCompiler("polymer", parseHtml, dissectHtml));
-
 
