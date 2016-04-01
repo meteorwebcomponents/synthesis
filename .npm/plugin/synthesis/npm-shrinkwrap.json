@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "parse5": {
+      "version": "2.1.5",
+      "resolved": "https://registry.npmjs.org/parse5/-/parse5-2.1.5.tgz",
+      "from": "parse5@2.1.5"
+    }
+  }
+}
