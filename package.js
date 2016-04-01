@@ -1,12 +1,8 @@
 Package.describe({
   name: 'mwc:synthesis',
-  version: '0.0.1',
-  // Brief, one-line summary of the package.
-  summary: '',
-  // URL to the Git repository containing the source code for this package.
-  git: '',
-  // By default, Meteor will default to using README.md for documentation.
-  // To avoid submitting documentation, set this field to null.
+  version: '1.0.0',
+  summary: 'Synthesis is meteor + polymer',
+  git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'
 });
 
@@ -14,8 +10,6 @@ Package.onUse(function(api) {
   api.versionsFrom('1.3');
   api.use('ecmascript');
   api.use("isobuild:compiler-plugin@1.0.0");
-  //api.addFiles('polymer.js',["client"]);
-  //api.addFiles('webcomponents-lite.min.js',["client"]);
 });
 
 Package.onTest(function(api) {
@@ -30,11 +24,11 @@ Package.onTest(function(api) {
 Package.registerBuildPlugin({
   name: 'synthesis',
   use: [
-    'caching-html-compiler',
-    'ecmascript',
-    'templating-tools',
-    'underscore',
-    'html-tools'
+    'caching-html-compiler@1.0.2',
+    'ecmascript@0.4.1',
+    'templating-tools@1.0.2',
+    'underscore@1.0.6',
+    'html-tools@1.0.7'
   ],
   sources: ['plugin/synthesis.js'],
   npmDependencies: {
