@@ -24,7 +24,7 @@ client/test-element.html
 ```html
 <dom-module id="test-element">
   <template>
-    <paper-button on-click="shownickname">show nickname</paper-button>
+    <paper-button on-click="showNickName">show nickname</paper-button>
     name : {{name}}
 <div id="nnDiv" hidden="{{nndHidden}}">
     nickname:{{nickname}}
