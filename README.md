@@ -66,8 +66,8 @@ client/index.html (you can use any filename)
   <title>Synthesis</title>
 
     <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-  <link rel="import" href="bower_components/polymer/polymer.html"/>
-  <link rel="import" href="bower_components/paper-button/paper-button.html"/>
+  <link rel="import" href="/bower_components/polymer/polymer.html"/>
+  <link rel="import" href="/bower_components/paper-button/paper-button.html"/>
 </head>
 
 <body class="fullbleed">
@@ -99,5 +99,9 @@ A sample bower.json (public/bower.json)
 ### Demo
 
 https://github.com/meteorwebcomponents/synthesis-demo
+
+### Kickstart Your Meteor Polymer projects
+
+https://github.com/aruntk/kickstart-meteor-polymer
 
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
