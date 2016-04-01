@@ -48,7 +48,7 @@ Polymer({
     },
     nndHidden:{
     type:Boolean,
-    value:True
+    value:true
     }
   },
   showNickName:function(){
@@ -95,5 +95,9 @@ A sample bower.json (public/bower.json)
 }
 
 ```
+
+### Demo
+
+https://github.com/meteorwebcomponents/synthesis-demo
 
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
