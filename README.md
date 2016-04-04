@@ -118,4 +118,6 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 
 Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
+### Note
+
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
