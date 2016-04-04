@@ -106,12 +106,16 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
 
-### TOD
+### TODO
 - [ ] Ability to use remote scripts
 - [x] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
 - [ ] Link imports inside html files should be vulcanized
 - [x] Css inside html inlined
 - [x] Client side renderer for html files added
 - [x] import 'my-components.html'; support
+
+### Social
+
+Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
 
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
