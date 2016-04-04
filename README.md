@@ -5,7 +5,7 @@
 
 `meteor add mwc:synthesis`
 
-synthesis is a meteor 1.3+ package.
+synthesis is a meteor 1.3+ package. for < 1.3 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
 
 You can optionally use these packages from meteorwebcomponents
 
