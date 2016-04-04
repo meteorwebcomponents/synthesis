@@ -1,5 +1,6 @@
 # Synthesis is meteor + polymer
 
+
 ## Installation
 
 `meteor add mwc:synthesis`
@@ -103,5 +104,12 @@ https://github.com/meteorwebcomponents/synthesis-demo
 ### Kickstart Your Meteor Polymer projects
 
 https://github.com/aruntk/kickstart-meteor-polymer
+
+![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
+
+### TODO
+
+- [ ] Ability to use remote scripts
+- [ ] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
 
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
