@@ -9,8 +9,9 @@ synthesis is a meteor 1.3+ package.
 
 You can optionally use these packages from meteorwebcomponents
 
-* [mwc:mixin](https://github.com/meteorwebcomponents/mixin) -  Polymer data package
-* [mwc:router](https://github.com/meteorwebcomponents/router) - Flowrouter with polymer
+* [mwc:mixin](https://github.com/meteorwebcomponents/mixin) -  Polymer data package.
+* [mwc:router](https://github.com/meteorwebcomponents/router) - Flowrouter with polymer.
+* [mwc:layout](https://github.com/meteorwebcomponents/layout) - Polymer layout renderer.
 
 ## Usage
 
