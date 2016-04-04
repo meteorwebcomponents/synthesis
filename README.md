@@ -110,6 +110,10 @@ https://github.com/aruntk/kickstart-meteor-polymer
 ### TODO
 
 - [ ] Ability to use remote scripts
-- [ ] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
+- [x] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
+- [ ] Link imports inside html files should be vulcanized
+- [x] Css inside html inlined
+- [x] Client side renderer for html files added
+- [x] import 'my-components.html'; support
 
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
