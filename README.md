@@ -116,4 +116,4 @@ https://github.com/aruntk/kickstart-meteor-polymer
 - [x] Client side renderer for html files added
 - [x] import 'my-components.html'; support
 
-You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
+For now we dont have vulcanize and link imports options unless you add them in the head.You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
