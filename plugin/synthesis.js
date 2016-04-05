@@ -176,10 +176,10 @@ var dissectHtml = function(tag){
           } 
           var bodyContents = minimizeHtml(parse5.serialize(body));
           if(sourceName.match(/^client/)){
-            dissected.js += Synthesis.body.generateJS(bodyContents);
+            dissected.body += bodyContents;
           }
           else{
-            dissected.js += Synthesis.body.generateJS(bodyContents,true);
+            dissected.js += Synthesis.generateJS(bodyContents);
           }
         }
       });
