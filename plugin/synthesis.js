@@ -21,6 +21,16 @@ var minimize = new Minimize({
   }
 
 });
+
+var vulcanize = new Vulcanize({
+  stripExcludes: [
+    'polymer\.html$'
+  ],
+  inlineScripts: true,
+  inlineCss: true,
+  implicitStrip: true,
+  stripComments: true
+});
 var throwCompileError = TemplatingTools.throwCompileError;
 
 class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
@@ -58,6 +68,72 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
       } else {
         throw e;
       }
+    }
+  }
+
+  addCompileResult(inputFile, compileResult) {
+    let allJavaScript = "";
+
+    if (compileResult.head) {
+      inputFile.addHtml({ section: "head", data: compileResult.head });
+    }
+
+    if (compileResult.body) {
+      inputFile.addHtml({ section: "body", data: compileResult.body });
+    }
+
+    if (compileResult.js) {
+      allJavaScript += compileResult.js;
+    }
+
+    if (! _.isEmpty(compileResult.bodyAttrs)) {
+      Object.keys(compileResult.bodyAttrs).forEach((attr) => {
+        const value = compileResult.bodyAttrs[attr];
+        if (this._bodyAttrInfo.hasOwnProperty(attr) &&
+            this._bodyAttrInfo[attr].value !== value) {
+          // two conflicting attributes on <body> tags in two different template
+          // files
+          inputFile.error({
+            message:
+              `<body> declarations have conflicting values for the '${ attr }' ` +
+              `attribute in the following files: ` +
+              this._bodyAttrInfo[attr].inputFile.getPathInPackage() +
+              `, ${ inputFile.getPathInPackage() }`
+          });
+        } else {
+          this._bodyAttrInfo[attr] = {inputFile, value};
+        }
+      });
+
+      // Add JavaScript code to set attributes on body
+      allJavaScript +=
+        `Meteor.startup(function() {
+      var attrs = ${JSON.stringify(compileResult.bodyAttrs)};
+      for (var prop in attrs) {
+      document.body.setAttribute(prop, attrs[prop]);
+      }
+      });
+      `;
+    }
+
+
+    if (allJavaScript) {
+      const filePath = inputFile.getPathInPackage();
+      // XXX this path manipulation may be unnecessarily complex
+      let pathPart = path.dirname(filePath);
+      if (pathPart === '.')
+        pathPart = '';
+      if (pathPart.length && pathPart !== path.sep)
+        pathPart = pathPart + path.sep;
+      const ext = path.extname(filePath);
+      const basename = path.basename(filePath, ext);
+
+      // XXX generate a source map
+
+      inputFile.addJavaScript({
+        path: path.join(pathPart, "template." + basename + ".js"),
+        data: allJavaScript
+      });
     }
   }
 };
@@ -128,23 +204,39 @@ var dissectHtml = function(tag){
                 return child;
               }
               else if(child.nodeName == "link"){
-                if(attrs){
-                  var ifImport = _.find(attrs, function(v){
+                if(child.attrs){
+                  var ifImport = _.find(child.attrs, function(v){
 
                     return (v.name == "rel" && v.value == "import")
 
                   });
                   if(ifImport){
-                    var hrefAttr = _.find(attrs, function(v){
+                    var hrefAttr = _.find(child.attrs, function(v){
 
                       return v.name == "href";
 
                     });
                     if(hrefAttr){
                       if(hrefAttr.value){
-                        var url = path.resolve(sourceName,hrefAttr.value);
+                        var url = path.resolve(sourceName,'../',hrefAttr.value);
                         // vulcanize this url and run dissectHtml for the output
-                        return child; // remove this after adding vulcanize
+                        if(!url.match(/polymer\.html$/)){
+                          const vulcanized = vulcanizeImports(url);
+                          if(vulcanized){
+                            const fileTag = {
+                              contents: vulcanized,
+                              sourceName: url
+                            };
+
+                            var result = dissectHtml(parseHtml(fileTag));
+
+                            dissected.head += result.head;
+                            dissected.body += result.body;
+                            dissected.js += result.js;
+
+                          }
+                        }
+                        //return child; // remove this after adding vulcanize
                       }
                       else{
                         throwCompileError("link import href is blank");
@@ -176,10 +268,12 @@ var dissectHtml = function(tag){
           } 
           var bodyContents = minimizeHtml(parse5.serialize(body));
           if(sourceName.match(/^client/)){
-            dissected.js += Synthesis.body.generateJS(bodyContents);
+            dissected.body += bodyContents;
+            //dissected.js += Synthesis.generateJS(bodyContents);
           }
           else{
-            dissected.js += Synthesis.body.generateJS(bodyContents,true);
+            dissected.body += bodyContents;
+            //dissected.js += Synthesis.generateJS(bodyContents);
           }
         }
       });
@@ -190,6 +284,22 @@ var dissectHtml = function(tag){
 }
 
 
+var vulcanizeImports = function(link) {
+  var future = new Future();
+  vulcanize.process(link, function(err, html) {
+    //if (_.isString(process.env.vulcanized)) {
+    //filePath = url.resolve(process.env.CDN_PREFIX, filePath);
+    //}
+    if(err){
+      //throwCompileError(err);
+      console.log(err);
+    }
+
+    future.return(html);
+  });
+
+  return future.wait();
+}
 
 var minimizeHtml = function(html) {
   var future = new Future();

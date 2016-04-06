@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis',
-  version: '1.0.5',
+  version: '1.0.7',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'
@@ -10,7 +10,7 @@ Package.onUse(function(api) {
   api.versionsFrom('1.3');
   api.use('ecmascript');
   api.use("isobuild:compiler-plugin@1.0.0");
-  api.mainModule('synthesis-client.js');
+  api.addFiles('synthesis-client.js',['client']);
   api.export('Synthesis',["client"]);
 });
 
@@ -20,7 +20,6 @@ Package.onTest(function(api) {
   api.use('mwc:synthesis');
   api.mainModule('synthesis-tests.js');
 });
-
 
 
 Package.registerBuildPlugin({
@@ -34,12 +33,23 @@ Package.registerBuildPlugin({
     'html-tools@1.0.7'
   ],
   sources: [
+    'plugin/comment-map.js',
+    'plugin/constants.js',
+    'plugin/matchers.js',
+    'plugin/output.js',
+    'plugin/pathresolver.js',
+    'plugin/vulcan.js',
     'plugin/synthesizer.js',
     'plugin/synthesis.js'
 
   ],
   npmDependencies: {
     'minimize':"1.8.1",
+    "dom5": "1.3.1",
+    "es6-promise": "2.1.0",
+    "hydrolysis": "1.19.1",
+    "nopt": "3.0.1",
+    "path-posix": "1.0.0",
     'parse5': '2.1.5'
   }
 });
