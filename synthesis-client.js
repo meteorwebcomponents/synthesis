@@ -69,6 +69,7 @@ Meteor.startup(function(){
 //if(Meteor.isClient){
 Synthesizer.prototype.render = function (str,append) {
   Synthesis._q.push({str:str,append:append});
+
 }
 //}
 
