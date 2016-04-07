@@ -107,7 +107,7 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
 
 ### TODO
-- [ ] Work in cordova.
+- [ ] Work in cordova. Solve Polymer is not defined error.(wait for link imports to complete)
 - [ ] Ability to use remote scripts inside
 - [x] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
 - [x] Link imports inside html files should be vulcanized
