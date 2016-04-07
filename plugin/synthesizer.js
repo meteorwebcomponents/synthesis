@@ -4,7 +4,7 @@ _synthesizer = function(settings){
 _synthesizer.prototype.generateJS =function(html,append){
   append = !!append;
   return `
-  (function(){Synthesizer.render(\`${html}\`,${append});})()
+  Synthesis.render(\`${html}\`,${append});
   `
 }
 
