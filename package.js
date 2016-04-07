@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis',
-  version: '1.0.8',
+  version: '1.0.9',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'
@@ -10,8 +10,11 @@ Package.onUse(function(api) {
   api.versionsFrom('1.3');
   api.use('ecmascript');
   api.use("isobuild:compiler-plugin@1.0.0");
-  api.addFiles('synthesis-client.js',['client']);
+  api.addFiles('synthesis.js',['client']);
+  api.addFiles('synthesizer-browser.js',['web.browser']);
+  api.addFiles('synthesizer-cordova.js',['web.cordova']);
   api.export('Synthesis',["client"]);
+  api.export('Synthesizer',["client"]);
 });
 
 Package.onTest(function(api) {

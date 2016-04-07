@@ -5,7 +5,7 @@
 
 `meteor add mwc:synthesis`
 
-synthesis is a meteor 1.3+ package. for < 1.3 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
+synthesis is a meteor 1.3+ package. for 1.2 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
 
 You can optionally use these packages from meteorwebcomponents
 
@@ -40,6 +40,9 @@ you can add js in separate file or you can add it inside the element html file u
 
 ```js
 // client/test-element.js
+// Using Synthesizer.ready
+
+Synthesizer.ready(function(){ //important. To register elements only after the polymer import is ready
 Polymer({
   is:"test-element",
   properties:{
@@ -60,6 +63,32 @@ Polymer({
     this.nndHidden = false;
   }
 })
+})
+
+
+//OR you can simply Use Synthesis
+
+Synthesis({
+  is:"test-element",
+  properties:{
+    name:{
+      type:String,
+      value:"Arun Kumar"
+    },
+    nickname:{
+      type:String,
+      value:"tkay"
+    },
+    nndHidden:{
+      type:Boolean,
+      value:true
+    }
+  },
+  showNickName: function () {
+    this.nndHidden = false;
+  }
+})
+
 
 ```
 
@@ -107,8 +136,8 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
 
 ### TODO
-- [ ] Work in cordova.
-- [ ] Ability to use remote scripts inside
+- [x] Work in cordova.
+- [ ] Ability to use remote scripts inside. Scripts inside link imports are automatically added currently.
 - [x] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
 - [x] Link imports inside html files should be vulcanized
 - [x] Css inside html inlined

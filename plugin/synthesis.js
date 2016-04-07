@@ -269,8 +269,9 @@ var dissectHtml = function(tag){
           var bodyContents = minimizeHtml(parse5.serialize(body));
           if(sourceName.match(/^client/)){
             dissected.body += bodyContents;
+          }
           else{
-            dissected.js += Synthesis.generateJS(bodyContents);
+            dissected.js += Synthesizer.generateJS(bodyContents);
           }
         }
       });
