@@ -22,9 +22,15 @@ you can add js in separate file or you can add it inside the element html file u
 
 ```html
 <!-- imports/test-element.html -->
+
+<link rel="import" href="test-element2.html"> <!--Gets vulcanized and added to body -->
+<link rel="import" href="/bower_components/paper-button/paper-button.html"> <!--Link simply gets added -->
 <dom-module id="test-element">
   <template>
-  <link rel="stylesheet" href="test-element.css"> <!--converted to style tag-->
+  <link rel="stylesheet" href="test-element.css"> <!--converted to style tag. this style is restricted to elements inside the element-->
+  <style> 
+  #nndiv{color:blue}
+  </style>
     <paper-button on-click="showNickName">
       Show nickname
     </paper-button>
@@ -36,6 +42,7 @@ you can add js in separate file or you can add it inside the element html file u
     </div>
   </template>
 </dom-module>
+
 ```
 ```css
 /*imports/test-element.css*/
@@ -128,7 +135,7 @@ import '../imports/test-element.js';
 
 ```
 
-Add your bower_components inside public folder.
+Best practice to add third party components is to add inside public folder.
 
 A sample bower.json (public/bower.json)
 
