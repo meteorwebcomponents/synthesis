@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis',
-  version: '1.0.9',
+  version: '1.0.10',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'
@@ -32,7 +32,6 @@ Package.registerBuildPlugin({
     'ecmascript@0.4.1',
     'templating-tools@1.0.2',
     'underscore@1.0.6',
-    //'mwc:vulcanize@1.0.0',
     'html-tools@1.0.7'
   ],
   sources: [

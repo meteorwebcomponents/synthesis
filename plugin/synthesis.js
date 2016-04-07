@@ -140,7 +140,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 
 parseHtml = function(arg){
   var contents = arg.contents
-  var parseOptions = {locationInfo:true}
+  var parseOptions = {}
   var parsed = parse5.parse(contents);
   //console.log(arg.sourceName);
   const tag = {
@@ -179,20 +179,21 @@ var dissectHtml = function(tag){
           });
           body.childNodes = processChildNodes(body.childNodes);
           function processChildNodes(childNodes){
-            return _.filter(childNodes,function(child){
-              if(child.nodeName === "script"){
-                dissected.js += parse5.serialize(child)
-              }
-              else if(child.nodeName == "template"){
-                var isWalkable = child.content &&child.content.nodeName == "#document-fragment" && child.content.childNodes;
+            return _.compact(_.map(childNodes,function(child){
+              switch (child.nodeName) {
+                case "script":
+                  dissected.js += parse5.serialize(child)
+                break;
+                case "template":
+                  var isWalkable = child.content &&child.content.nodeName == "#document-fragment" && child.content.childNodes;
                 if(isWalkable){
                   child.content.childNodes = processChildNodes(child.content.childNodes);
                 }
                 return child;
-              }
-              else if(child.nodeName == "style"){
+                break;
+                case "style":
 
-                var source = parse5.serialize(child);
+                  var source = parse5.serialize(child);
                 if(child.childNodes){
                   child.childNodes = child.childNodes.map(function(child){
                     if(child.nodeName == "#text"){
@@ -202,12 +203,12 @@ var dissectHtml = function(tag){
                   });
                 }
                 return child;
-              }
-              else if(child.nodeName == "link"){
-                if(child.attrs){
+                break;
+                case "link":
+                  if(child.attrs){
+                  var supportedRels = ["import","stylesheet"];
                   var ifImport = _.find(child.attrs, function(v){
-
-                    return (v.name == "rel" && v.value == "import")
+                    return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
 
                   });
                   if(ifImport){
@@ -218,29 +219,58 @@ var dissectHtml = function(tag){
                     });
                     if(hrefAttr){
                       if(hrefAttr.value){
-                        var url = path.resolve(sourceName,'../',hrefAttr.value);
-                        // vulcanize this url and run dissectHtml for the output
-                        if(!url.match(/polymer\.html$/)){
-                          const vulcanized = vulcanizeImports(url);
-                          if(vulcanized){
-                            const fileTag = {
-                              contents: vulcanized,
-                              sourceName: url
-                            };
+                        var inValidUrl = sourceName.match(/^(https?:\/\/)|(^\/)/); 
+                        if(inValidUrl){
+                          return child;
+                        }
+                        else{
 
-                            var result = dissectHtml(parseHtml(fileTag));
+                          var url = path.resolve(sourceName,'../',hrefAttr.value);
+                          // vulcanize this url and run dissectHtml for the output
+                          switch(ifImport.value){
+                            case "import":
+                              if(!url.match(/polymer\.html$/)){
+                              const vulcanized = vulcanizeImports(url);
+                              if(vulcanized){
+                                const fileTag = {
+                                  contents: vulcanized,
+                                  sourceName: url
+                                };
 
-                            dissected.head += result.head;
-                            dissected.body += result.body;
-                            dissected.js += result.js;
+                                var result = dissectHtml(parseHtml(fileTag));
+
+                                dissected.head += result.head;
+                                dissected.body += result.body;
+                                dissected.js += result.js;
+
+                              }
+                            }
+
+                            break;
+                            case "stylesheet":
+                              var contents = fs.readFileSync(url,"utf8");
+                            contents = contents.replace(/\r?\n|\r/g, "");
+                            if(contents){
+                              child = _.extend(child,{
+                                nodeName:"style",
+                                tagName:"style",
+                                childNodes:[
+                                  {nodeName:"#text",
+                                    value:contents
+                                  }
+                                ]
+                              });
+                              return child;
+                            }
+
+
+                            break;
 
                           }
                         }
-                        //return child; // remove this after adding vulcanize
                       }
                       else{
                         throwCompileError("link import href is blank");
-
                       }
                     }
                     else{
@@ -254,15 +284,17 @@ var dissectHtml = function(tag){
                 else{
                   return child;
                 }
+                break;
+                default:
+                  if(child.childNodes && child.childNodes.length){
+                  child.childNodes = processChildNodes(child.childNodes);
+                  return child;
+                }
+                else{
+                  return child;
+                }
               }
-              else if(child.childNodes && child.childNodes.length){
-                child.childNodes = processChildNodes(child.childNodes);
-                return child;
-              }
-              else{
-                return child;
-              }
-            });           
+            }));           
 
 
           } 
@@ -313,5 +345,4 @@ var minimizeHtml = function(html) {
   return future.wait();
 
 };
-
 

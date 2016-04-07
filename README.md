@@ -21,9 +21,10 @@ you can add js in separate file or you can add it inside the element html file u
 
 
 ```html
-<!-- client/test-element.html -->
+<!-- imports/test-element.html -->
 <dom-module id="test-element">
   <template>
+  <link rel="stylesheet" href="test-element.css"> <!--converted to style tag-->
     <paper-button on-click="showNickName">
       Show nickname
     </paper-button>
@@ -36,11 +37,18 @@ you can add js in separate file or you can add it inside the element html file u
   </template>
 </dom-module>
 ```
+```css
+/*imports/test-element.css*/
+paper-button{
+color:red;
+}
+```
 
+Using Synthesizer.ready
 
 ```js
-// client/test-element.js
-// Using Synthesizer.ready
+// imports/test-element.js
+import './test-element.html';
 
 Synthesizer.ready(function(){ //important. To register elements only after the polymer import is ready
 Polymer({
@@ -65,8 +73,13 @@ Polymer({
 })
 })
 
+```
 
-//OR you can simply Use Synthesis
+OR you can simply Use Synthesis
+
+```js
+// imports/test-element.js
+import './test-element.html';
 
 Synthesis({
   is:"test-element",
@@ -109,6 +122,11 @@ Synthesis({
   <test-element></test-element>
 </body>
 ```
+```js
+// client/index.js
+import '../imports/test-element.js';
+
+```
 
 Add your bower_components inside public folder.
 
@@ -139,10 +157,11 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 - [x] Work in cordova.Solve Polymer is not defined error.(wait for link imports to complete)
 - [ ] Ability to use remote scripts inside. Scripts inside link imports are automatically added currently.
 - [x] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
-- [x] Link imports inside html files should be vulcanized
-- [x] Css inside html inlined
-- [x] Client side renderer for html files added
-- [x] import 'my-components.html'; support
+- [x] html link imports inside html files should be vulcanized. `<link rel="import"`
+- [x] Css inside html inlined.
+- [x] `<link rel="stylesheet" href="component.css"` support. gets converted to `<style>contents</style>`
+- [x] Client side renderer for html files added.
+- [x] import 'my-components.html'; support.
 
 
 ### Social
