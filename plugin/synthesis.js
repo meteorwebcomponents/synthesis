@@ -2,7 +2,9 @@ Plugin.registerCompiler({
   extensions: ['html'],
   archMatching: 'web',
   isTemplate: true
-}, () => new PolymerCachingHtmlCompiler("synthesis", parseHtml, dissectHtml));
+}, function(){
+  return new PolymerCachingHtmlCompiler("synthesis", parseHtml, dissectHtml);
+});
 
 
 var parse5 = Npm.require('parse5');
@@ -71,71 +73,6 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
     }
   }
 
-  addCompileResult(inputFile, compileResult) {
-    let allJavaScript = "";
-
-    if (compileResult.head) {
-      inputFile.addHtml({ section: "head", data: compileResult.head });
-    }
-
-    if (compileResult.body) {
-      inputFile.addHtml({ section: "body", data: compileResult.body });
-    }
-
-    if (compileResult.js) {
-      allJavaScript += compileResult.js;
-    }
-
-    if (! _.isEmpty(compileResult.bodyAttrs)) {
-      Object.keys(compileResult.bodyAttrs).forEach((attr) => {
-        const value = compileResult.bodyAttrs[attr];
-        if (this._bodyAttrInfo.hasOwnProperty(attr) &&
-            this._bodyAttrInfo[attr].value !== value) {
-          // two conflicting attributes on <body> tags in two different template
-          // files
-          inputFile.error({
-            message:
-              `<body> declarations have conflicting values for the '${ attr }' ` +
-              `attribute in the following files: ` +
-              this._bodyAttrInfo[attr].inputFile.getPathInPackage() +
-              `, ${ inputFile.getPathInPackage() }`
-          });
-        } else {
-          this._bodyAttrInfo[attr] = {inputFile, value};
-        }
-      });
-
-      // Add JavaScript code to set attributes on body
-      allJavaScript +=
-        `Meteor.startup(function() {
-      var attrs = ${JSON.stringify(compileResult.bodyAttrs)};
-      for (var prop in attrs) {
-      document.body.setAttribute(prop, attrs[prop]);
-      }
-      });
-      `;
-    }
-
-
-    if (allJavaScript) {
-      const filePath = inputFile.getPathInPackage();
-      // XXX this path manipulation may be unnecessarily complex
-      let pathPart = path.dirname(filePath);
-      if (pathPart === '.')
-        pathPart = '';
-      if (pathPart.length && pathPart !== path.sep)
-        pathPart = pathPart + path.sep;
-      const ext = path.extname(filePath);
-      const basename = path.basename(filePath, ext);
-
-      // XXX generate a source map
-
-      inputFile.addJavaScript({
-        path: path.join(pathPart, "template." + basename + ".js"),
-        data: allJavaScript
-      });
-    }
-  }
 };
 
 parseHtml = function(arg){
@@ -160,7 +97,7 @@ var dissectHtml = function(tag){
   var sourceName = tag.sourceName;
   document.childNodes.forEach(function(child){
     if(child.nodeName==="#documentType"){
-      throwCompileError("Can't set DOCTYPE here.  (Meteor sets <!DOCTYPE html> for you)");
+      throwCompileError("Can't set DOCTYPE here.  (Meteor sets !DOCTYPE html for you)");
     }
     else if(child.nodeName ==="html"){
       child.childNodes.forEach(function(child){
@@ -172,7 +109,7 @@ var dissectHtml = function(tag){
           body.attrs.forEach(function(attr) {
             if (dissected.bodyAttrs.hasOwnProperty(attr.name) && dissected.bodyAttrs[attr.name] !== attr.value) {
               throwCompileError(
-                `<body> declarations have conflicting values for the '${attr.name}' attribute.`);
+                `body declarations have conflicting values for the '${attr.name}' attribute.`);
             }
 
             dissected.bodyAttrs[attr.name] = attr.value;

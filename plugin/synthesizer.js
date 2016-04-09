@@ -3,7 +3,7 @@ _synthesizer = function(settings){
 }
 _synthesizer.prototype.generateJS =function(html,append){
   append = !!append;
-const htmlStr = `${html}`;
+  const htmlStr = JSON.stringify(html);
   return `
   Synthesizer.render(${htmlStr},${append});
   `
