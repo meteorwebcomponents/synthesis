@@ -3,8 +3,9 @@ _synthesizer = function(settings){
 }
 _synthesizer.prototype.generateJS =function(html,append){
   append = !!append;
+const htmlStr = `${html}`;
   return `
-  Synthesizer.render(\`${html}\`,${append});
+  Synthesizer.render(${htmlStr},${append});
   `
 }
 

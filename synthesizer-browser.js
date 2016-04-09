@@ -51,7 +51,7 @@ if(Meteor.isClient){
   document.interactive().then(function(){
     var el = document.body;
     var div = document.createElement('div');
-    div.innerHTML = Synthesizer._q.join(`\n`);
+    div.innerHTML = Synthesizer._q.join('\n');
     while (div.children.length > 0) {
       el.appendChild(div.children[0]);
     }
