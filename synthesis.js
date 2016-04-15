@@ -1,4 +1,6 @@
-Synthesis = function(){
-  Synthesizer.pObjs = Synthesizer.pObjs.concat([].slice.call(arguments));
+Synthesis = function(obj){
+  Synthesizer.ready(function(){
+    Polymer(obj);
+  });
 }
 

@@ -1,7 +1,6 @@
 _synthesizer = function(settings){
   this.settings = settings;
   this._q = [];
-  this.pObjs = [];
 }
 _synthesizer.prototype.render = function (str,append) {
   this._q.push(str);
@@ -29,12 +28,6 @@ _synthesizer.prototype.ready = function(){
 }
 
 document.addEventListener("deviceready", function(info) {
-
-  HTMLImports.whenReady(function(){
-    Synthesizer.pObjs.forEach(function(obj){
-      Polymer(obj);
-    });
-  });
 
   var renderQ = function(){
     var el = document.body;

@@ -97,7 +97,7 @@ var dissectHtml = function(tag){
   var sourceName = tag.sourceName;
   document.childNodes.forEach(function(child){
     if(child.nodeName==="#documentType"){
-      throwCompileError("Can't set DOCTYPE here.  (Meteor sets !DOCTYPE html for you)");
+      throwCompileError("Can't set DOCTYPE here.  (Meteor sets DOCTYPE html for you)");
     }
     else if(child.nodeName ==="html"){
       child.childNodes.forEach(function(child){
