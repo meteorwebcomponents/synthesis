@@ -50,45 +50,11 @@ paper-button{
 color:red;
 }
 ```
-
-Using Synthesizer.ready
-
 ```js
 // imports/test-element.js
 import './test-element.html';
 
-Synthesizer.ready(function(){ //important. To register elements only after the polymer import is ready
 Polymer({
-  is:"test-element",
-  properties:{
-    name:{
-      type:String,
-      value:"Arun Kumar"
-    },
-    nickname:{
-      type:String,
-      value:"tkay"
-    },
-    nndHidden:{
-      type:Boolean,
-      value:true
-    }
-  },
-  showNickName: function () {
-    this.nndHidden = false;
-  }
-})
-})
-
-```
-
-OR you can simply Use Synthesis
-
-```js
-// imports/test-element.js
-import './test-element.html';
-
-Synthesis({
   is:"test-element",
   properties:{
     name:{
@@ -155,10 +121,12 @@ A sample bower.json (public/bower.json)
 ### Demo
 Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-demo)
 
+
 ### Kickstart Your Meteor Polymer projects
 [Kickstart a Meteor/Polymer project](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
 
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
+
 
 ### TODO
 - [x] Work in cordova.Solve Polymer is not defined error.(wait for link imports to complete)
@@ -171,6 +139,7 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 - [x] import 'my-components.html'; support.
 
 
+
 ### Social
 
 Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
@@ -178,7 +147,9 @@ Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_
 Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536
 
 
+
 ### Note
 
 You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
+
 

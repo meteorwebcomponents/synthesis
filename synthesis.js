@@ -1,6 +1,4 @@
 Synthesis = function(obj){
-  Synthesizer.ready(function(){
-    Polymer(obj);
-  });
+  Synthesizer.objQ.push(obj);
 }
 
