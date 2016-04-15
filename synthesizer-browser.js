@@ -26,7 +26,7 @@ _synthesizer.prototype.ready = function(){
     HTMLImports.whenReady(fns[i]);
   }
 }
-document.interactive().then(function(){
+HTMLImports.whenReady(function(){
   var el = document.body;
   var div = document.createElement('div');
   div.innerHTML = Synthesizer._q.join('\n');
