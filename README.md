@@ -15,16 +15,35 @@ You can optionally use these packages from meteorwebcomponents
 
 ## Usage
 
-Define your elements in the client folder.
+Refer http://guide.meteor.com
 
-you can add js in separate file or you can add it inside the element html file using script tag.
+Application Structure http://guide.meteor.com/structure.html.
 
+Keeps all your components in imports folder 
+
+You can import html using 
+
+1. Meteor's import './component.html'; 
+2. <link rel="import" href="./component.html"> 
+ 
+Script
+1. <script>yourscript goes here</script> 
+2. <script src="component.js"></script>
+
+Css (its important follow these two methods to confine style inside the component.)
+1. <style>Your style goes here</style>
+2. <link rel="stylesheet" href="component.css">
+
+Add bower_components to any folder inside imports directory. 
+
+Assume bower directory is imports/ui/bower_components
 
 ```html
-<!-- imports/test-element.html -->
+<!-- imports/ui/component/test-element.html -->
 
-<link rel="import" href="test-element2.html"> <!--Gets vulcanized and added to body -->
-<link rel="import" href="/bower_components/paper-button/paper-button.html"> <!--Link simply gets added -->
+<link rel="import" href="test-element2.html"> <!-- imports/ui/component/test-element.html Gets imported -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html"> 
+<script src="test-element.js"></script>
 <dom-module id="test-element">
   <template>
   <link rel="stylesheet" href="test-element.css"> <!--converted to style tag. this style is restricted to elements inside the element-->
@@ -45,13 +64,13 @@ you can add js in separate file or you can add it inside the element html file u
 
 ```
 ```css
-/*imports/test-element.css*/
+/*imports/ui/component/test-element.css*/
 paper-button{
 color:red;
 }
 ```
 ```js
-// imports/test-element.js
+// imports/ui/component/test-element.js
 import './test-element.html';
 
 Polymer({
@@ -82,12 +101,7 @@ Polymer({
 <!-- client/index.html (you can use any filename) -->
 <head>
   <title>Synthesis</title>
-  <!-- include the webcomponents js file -->
-  <script src="/bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-  
-  <!-- import web components -->
-  <link rel="import" href="/bower_components/polymer/polymer.html"/>
-  <link rel="import" href="/bower_components/paper-button/paper-button.html"/>
+
 </head>
 
 <body class="fullbleed">
@@ -97,20 +111,25 @@ Polymer({
 ```
 ```js
 // client/index.js
-import '../imports/test-element.js';
+import '../imports/ui/components/test-element.html';
+  // include the webcomponents js file 
+import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js";
+
+//Remember to include a polymer component or polymer.html itself in any file
+
+import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time
 
-Best practice to add third party components is to add inside public folder.
-
-A sample bower.json (public/bower.json)
+A sample bower.json (imports/ui/bower.json)
 
 ```json
 {
   "dependencies": {
-    "iron-elements": "PolymerElements/iron-elements#^1.0.0",
-    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
-    "paper-elements": "PolymerElements/paper-elements#^1.0.5",
+    "iron-pages": "PolymerElements/iron-pages#^1.0.0",
+    "neon-animations": "PolymerElements/neon-animations#^1.0.0",
+    "paper-button": "PolymerElements/paper-button#^1.0.5",
     "polymer": "Polymer/polymer#^1.0.0"
   },
   "name": "mwc-synthesis",
@@ -129,15 +148,6 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 
 
 ### TODO
-- [x] Work in cordova.Solve Polymer is not defined error.(wait for link imports to complete)
-- [ ] Ability to use remote scripts inside. Scripts inside link imports are automatically added currently.
-- [x] Add scripts inside html tags to app.js . (currenlty only scripts outside html tags is added(unless the tag is a body tag))
-- [x] html link imports inside html files should be vulcanized. `<link rel="import"`
-- [x] Css inside html inlined.
-- [x] `<link rel="stylesheet" href="component.css"` support. gets converted to `<style>contents</style>`
-- [x] Client side renderer for html files added.
-- [x] import 'my-components.html'; support.
-
 
 
 ### Social
@@ -146,10 +156,5 @@ Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_
 
 Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536
 
-
-
-### Note
-
-You can use [differential:vulcanize](https://atmospherejs.com/differential/vulcanize) to vulcanize polymer elements instead of adding them in the head directly.
-
+> NO NEED to use any VULCANIZING tools. Synthesis handles everything
 
