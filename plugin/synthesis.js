@@ -34,7 +34,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
     }
 
     const inputPath = packagePrefix + inputFile.getPathInPackage();
-    if(inputPath.match(/\/(demo|test)\//) && !process.env.FORCESYNTHESIS){
+    if(inputPath.match(/\/(demo|test|docs).*\//) && !process.env.FORCESYNTHESIS){
       return null;
     }
     try {
@@ -249,6 +249,7 @@ class dissectHtml {
                     child = _.extend(child,{
                       nodeName:"style",
                       tagName:"style",
+                      attrs:[],
                       childNodes:[
                         {nodeName:"#text",
                           value:minified
