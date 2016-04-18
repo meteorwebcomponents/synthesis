@@ -3,7 +3,7 @@ Plugin.registerCompiler({
   archMatching: 'web',
   isTemplate: true
 }, function(){
-  return new PolymerCachingHtmlCompiler("synthesis", parseHtml, dissectHtml);
+  return new PolymerCachingHtmlCompiler("synthesis", parseHtml, handleTags);
 });
 
 
@@ -11,28 +11,8 @@ var parse5 = Npm.require('parse5');
 var fs = Npm.require('fs');
 var path = Npm.require('path');
 var Future = Npm.require('fibers/future');
-var Minimize = Npm.require('minimize');
-var minimize = new Minimize({
-  empty: true,  
-  comments: true,
-  ssi: true,
-  conditionals: true,
-  spare: true,
-  dom: {
-    xmlMode: false
-  }
+var _ = Npm.require('lodash');
 
-});
-
-var vulcanize = new Vulcanize({
-  stripExcludes: [
-    'polymer\.html$'
-  ],
-  inlineScripts: true,
-  inlineCss: true,
-  implicitStrip: true,
-  stripComments: true
-});
 var throwCompileError = TemplatingTools.throwCompileError;
 
 class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
@@ -54,12 +34,16 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
     }
 
     const inputPath = packagePrefix + inputFile.getPathInPackage();
+    if(inputPath.match(/\/(demo|test)\//) && !process.env.FORCESYNTHESIS){
+      return null;
+    }
     try {
       const tags = this.tagScannerFunc({
         sourceName: inputPath,
         contents: contents
       });
-      return this.tagHandlerFunc(tags);
+      var result = this.tagHandlerFunc(tags);
+      return result;
     } catch (e) {
       if (e instanceof TemplatingTools.CompileError) {
         inputFile.error({
@@ -79,7 +63,6 @@ parseHtml = function(arg){
   var contents = arg.contents
   var parseOptions = {}
   var parsed = parse5.parse(contents);
-  //console.log(arg.sourceName);
   const tag = {
     tagName: "template",
     attribs: {
@@ -91,195 +74,216 @@ parseHtml = function(arg){
   };
   return tag;
 }
-var dissectHtml = function(tag){
-  var document = tag.contents;
-  var dissected = {head:"",body:"",js:"",bodyAttrs:{}};
-  var sourceName = tag.sourceName;
-  document.childNodes.forEach(function(child){
-    if(child.nodeName==="#documentType"){
-      throwCompileError("Can't set DOCTYPE here.  (Meteor sets DOCTYPE html for you)");
-    }
-    else if(child.nodeName ==="html"){
-      child.childNodes.forEach(function(child){
-        if(child.nodeName === "head"){
-          dissected.head += parse5.serialize(child);
-        }
-        else if(child.nodeName==="body"){
-          var body = child;
-          body.attrs.forEach(function(attr) {
-            if (dissected.bodyAttrs.hasOwnProperty(attr.name) && dissected.bodyAttrs[attr.name] !== attr.value) {
-              throwCompileError(
-                `body declarations have conflicting values for the '${attr.name}' attribute.`);
-            }
+function handleTags(tags) {
+  var handler = new dissectHtml();
+  handler.dissect(tags);
+  return handler.dissected;
+}
 
-            dissected.bodyAttrs[attr.name] = attr.value;
-          });
-          body.childNodes = processChildNodes(body.childNodes);
-          function processChildNodes(childNodes){
-            return _.compact(_.map(childNodes,function(child){
-              switch (child.nodeName) {
-                case "script":
-                  dissected.js += parse5.serialize(child)
-                break;
-                case "template":
-                  var isWalkable = child.content &&child.content.nodeName == "#document-fragment" && child.content.childNodes;
-                if(isWalkable){
-                  child.content.childNodes = processChildNodes(child.content.childNodes);
-                }
-                return child;
-                break;
-                case "style":
-
-                  var source = parse5.serialize(child);
-                if(child.childNodes){
-                  child.childNodes = child.childNodes.map(function(child){
-                    if(child.nodeName == "#text"){
-                      child.value = child.value.replace(/\r?\n|\r/g, "");
-                    }
-                    return child;
-                  });
-                }
-                return child;
-                break;
+class dissectHtml {
+  constructor() {
+    this.dissected = {
+      head: '',
+      body: '',
+      js: '//*synthesis*//\n\n',
+      tailJs:'',
+      bodyAttrs: {}
+    };
+  }
+  dissect(tag){
+    this.document = tag.contents;
+    this.sourceName = tag.sourceName;
+    const self = this;
+    const children = this.document.childNodes || [];
+    for(i=0;i<children.length;i++){
+      const child = children[i];
+      switch(child.nodeName){
+        case "#documentType":
+          break;
+        case "html":
+          const _children = child.childNodes || [];
+        for(_i=0;_i<_children.length;_i++){
+          _child = _children[_i];
+          switch(_child.nodeName){
+            case "head":
+              _child.childNodes = _.compact(_.map(_child.childNodes,(__child) => {
+              switch (__child.nodeName){
                 case "link":
-                  if(child.attrs){
-                  var supportedRels = ["import","stylesheet"];
-                  var ifImport = _.find(child.attrs, function(v){
-                    return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
-
-                  });
-                  if(ifImport){
-                    var hrefAttr = _.find(child.attrs, function(v){
-
-                      return v.name == "href";
-
-                    });
-                    if(hrefAttr){
-                      if(hrefAttr.value){
-                        var inValidUrl = sourceName.match(/^(https?:\/\/)|(^\/)/); 
-                        if(inValidUrl){
-                          return child;
-                        }
-                        else{
-
-                          var url = path.resolve(sourceName,'../',hrefAttr.value);
-                          // vulcanize this url and run dissectHtml for the output
-                          switch(ifImport.value){
-                            case "import":
-                              if(!url.match(/polymer\.html$/)){
-                              const vulcanized = vulcanizeImports(url);
-                              if(vulcanized){
-                                const fileTag = {
-                                  contents: vulcanized,
-                                  sourceName: url
-                                };
-
-                                var result = dissectHtml(parseHtml(fileTag));
-
-                                dissected.head += result.head;
-                                dissected.body += result.body;
-                                dissected.js += result.js;
-
-                              }
-                            }
-
-                            break;
-                            case "stylesheet":
-                              var contents = fs.readFileSync(url,"utf8");
-                            contents = contents.replace(/\r?\n|\r/g, "");
-                            if(contents){
-                              child = _.extend(child,{
-                                nodeName:"style",
-                                tagName:"style",
-                                childNodes:[
-                                  {nodeName:"#text",
-                                    value:contents
-                                  }
-                                ]
-                              });
-                              return child;
-                            }
-
-
-                            break;
-
-                          }
-                        }
-                      }
-                      else{
-                        throwCompileError("link import href is blank");
-                      }
-                    }
-                    else{
-                      throwCompileError("No href for link import");
-                    }
-                  }
-                  else{
-                    return child;
-                  }
+                  __child = self.processLinks(__child);
+                if(__child){
+                  return __child;
                 }
-                else{
-                  return child;
+                break;
+                case "script":
+                  var result = self.processScripts(__child);
+                if(result){
+                  return result;
                 }
                 break;
                 default:
-                  if(child.childNodes && child.childNodes.length){
-                  child.childNodes = processChildNodes(child.childNodes);
-                  return child;
-                }
-                else{
-                  return child;
-                }
+                  return __child;
+                break;
+
+              } 
+            }));
+            const headContents =parse5.serialize(_child);
+            self.dissected.js += "\n\n"+Synthesizer.generateJS(headContents,true) +"\n\n";
+            break;
+            case "body":
+              const body = _child;
+            body.attrs.forEach((attr) => {
+              if (self.dissected.bodyAttrs.hasOwnProperty(attr.name) && self.dissected.bodyAttrs[attr.name] !== attr.value) {
               }
-            }));           
+              else{
+                self.dissected.bodyAttrs[attr.name] = attr.value;
+              }
+            });
+            delete body.attrs;
+            body.childNodes = self.processChildNodes(body.childNodes);
+            const bodyContents = parse5.serialize(body);
+            self.dissected.js += "\n\n"+Synthesizer.generateJS(bodyContents) +"\n\n";
+            break;
+          }
+        };
+        break;
+      }
+    };
+    this.dissected.js += "\n\n"+this.dissected.tailJs+"\n\n";
+
+  }
+  processChildNodes(childNodes){
+    const self = this;
+    return _.compact(_.map(childNodes,(child) => {
+      switch (child.nodeName) {
+        case "template":
+          const isWalkable = child.content &&child.content.nodeName == "#document-fragment" && child.content.childNodes;
+        if(isWalkable){
+          child.content.childNodes = self.processChildNodes(child.content.childNodes);
+        }
+        return child;
+        break;
+        case "link":
+          child = self.processLinks(child);
+        if(child){
+          return child;
+        }
+        break;
+        case "script":
+          var result = self.processScripts(child);
+        if(result){
+          return result;
+        }
+        break;
+        case "dom-module":
+          if(child.childNodes){
+          child.childNodes = self.processChildNodes(child.childNodes);
+        }
+        return child;
+        break;
+
+        default:
+          return child;
+        break;
+      }
+    }));           
 
 
-          } 
-          var bodyContents = minimizeHtml(parse5.serialize(body));
-          if(sourceName.match(/^client/)){
-            dissected.body += bodyContents;
+  } 
+  processScripts(child){
+    const self = this;
+    const importSource = _.find(child.attrs, (v) => {
+      return (v.name == "src");
+    });
+    if(importSource && importSource.value){
+      const importableUrl = self.importableUrl(importSource.value);
+      if(!importableUrl){
+        return child;
+      }
+      else{
+        self.dissected.tailJs +=  `\n\nrequire('${importableUrl}');\n\n`;
+      }
+    }
+    else{
+
+      self.dissected.tailJs += "\n\n"+parse5.serialize(child)+"\n\n";
+    }
+
+  }
+
+  importableUrl (url){
+    if(url.match(/^(\/|https?:\/)/)){
+      return false;
+    }
+    return url.match(/^(\.\/|\.\.\/)/) ? url : './'+url;
+  }
+  processLinks(child){
+    var self = this;
+    if(child.attrs){
+      const supportedRels = ["import","stylesheet"];
+      const ifImport = _.find(child.attrs, (v) => {
+        return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
+      });
+      if(ifImport){
+        const hrefAttr = _.find(child.attrs, (v) => {
+          return v.name == "href";
+        });
+        if(hrefAttr){
+          if(hrefAttr.value){
+            const url = self.importableUrl(hrefAttr.value);
+            if(!url){
+              return child;
+            }
+            else{
+              switch(ifImport.value){
+                case "import":
+                  const link = `require('${url}');`;
+                self.dissected.tailJs += "\n\n"+link+"\n\n";
+
+                break;
+                case "stylesheet":
+                  const url = path.resolve(self.sourceName,'../',hrefAttr.value);
+                if(fs.existsSync(url)){
+                  const contents = fs.readFileSync(url,"utf8");
+                  const minified = contents.replace(/\r?\n|\r/g, "");
+                  if(minified){
+                    child = _.extend(child,{
+                      nodeName:"style",
+                      tagName:"style",
+                      childNodes:[
+                        {nodeName:"#text",
+                          value:minified
+                        }
+                      ]
+                    });
+                    return child;
+                  }
+
+                }
+                return child;
+
+                break;
+
+              }
+            }
           }
           else{
-            dissected.js += Synthesizer.generateJS(bodyContents);
+            throwCompileError("link import href is blank");
           }
         }
-      });
-    }
-  });
-
-  return dissected;
-}
-
-
-var vulcanizeImports = function(link) {
-  var future = new Future();
-  vulcanize.process(link, function(err, html) {
-    //if (_.isString(process.env.vulcanized)) {
-    //filePath = url.resolve(process.env.CDN_PREFIX, filePath);
-    //}
-    if(err){
-      //throwCompileError(err);
-      console.log(err);
-    }
-
-    future.return(html);
-  });
-
-  return future.wait();
-}
-
-var minimizeHtml = function(html) {
-  var future = new Future();
-  minimize.parse(
-    html,
-    function (error, data) {
-      if(error){
-        future.throw(error);
+        else{
+          throwCompileError("No href for link import");
+        }
       }
-      future.return(data);
+      else{
+        return child;
+      }
     }
-  );
-  return future.wait();
+    else{
+      return child;
+    }
 
-};
+  }
+
+}
+
 
