@@ -27,10 +27,12 @@ You can import html using
 2. `<link rel="import" href="./component.html">`
  
 Script
+
 1. `<script>yourscript goes here</script>` 
 2. `<script src="component.js"></script>`
 
 Css (its important follow these two methods to confine style inside the component.)
+
 1. `<style>Your style goes here</style>`
 2. `<link rel="stylesheet" href="component.css">`
 
