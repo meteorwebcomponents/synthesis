@@ -24,15 +24,15 @@ Keeps all your components in imports folder
 You can import html using 
 
 1. Meteor's import './component.html'; 
-2. <link rel="import" href="./component.html"> 
+2. `<link rel="import" href="./component.html">`
  
 Script
-1. <script>yourscript goes here</script> 
-2. <script src="component.js"></script>
+1. `<script>yourscript goes here</script>` 
+2. `<script src="component.js"></script>`
 
 Css (its important follow these two methods to confine style inside the component.)
-1. <style>Your style goes here</style>
-2. <link rel="stylesheet" href="component.css">
+1. `<style>Your style goes here</style>`
+2. `<link rel="stylesheet" href="component.css">`
 
 Add bower_components to any folder inside imports directory. 
 
