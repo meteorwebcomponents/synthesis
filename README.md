@@ -3,6 +3,12 @@
 
 ## Installation
 
+Remove `blaze-html-templates` (remove all html compilers).
+
+`meteor remove blaze-html-templates`
+
+Install synthesis
+
 `meteor add mwc:synthesis`
 
 synthesis is a meteor 1.3+ package. for 1.2 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
