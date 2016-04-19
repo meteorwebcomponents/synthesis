@@ -3,7 +3,7 @@
 
 ## Installation
 
-Remove `blaze-html-templates` (remove all html compilers).
+Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 `meteor remove blaze-html-templates`
 
