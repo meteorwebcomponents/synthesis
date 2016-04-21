@@ -127,7 +127,13 @@ class dissectHtml {
               } 
             }));
             const headContents =parse5.serialize(_child);
-            self.dissected.js += "\n\n"+Synthesizer.generateJS(headContents,true) +"\n\n";
+            if(self.sourceName.match(/^client\//)){
+              self.dissected.head += headContents;
+            }
+            else{
+
+              self.dissected.js += "\n\n"+Synthesizer.generateJS(headContents,true) +"\n\n";
+            }
             break;
             case "body":
               const body = _child;
@@ -141,7 +147,12 @@ class dissectHtml {
             delete body.attrs;
             body.childNodes = self.processChildNodes(body.childNodes);
             const bodyContents = parse5.serialize(body);
-            self.dissected.js += "\n\n"+Synthesizer.generateJS(bodyContents) +"\n\n";
+            if(self.sourceName.match(/^client\//)){
+              self.dissected.body += bodyContents;
+            }
+            else{
+              self.dissected.js += "\n\n"+Synthesizer.generateJS(bodyContents) +"\n\n";
+            }
             break;
           }
         };
