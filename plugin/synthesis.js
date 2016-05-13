@@ -2,18 +2,18 @@ Plugin.registerCompiler({
   extensions: ['html'],
   archMatching: 'web',
   isTemplate: true
-}, function(){
+}, ()=>{
   return new PolymerCachingHtmlCompiler("synthesis", parseHtml, handleTags);
 });
 
 
-var parse5 = Npm.require('parse5');
-var fs = Npm.require('fs');
-var path = Npm.require('path');
-var Future = Npm.require('fibers/future');
-var _ = Npm.require('lodash');
+const parse5 = Npm.require('parse5');
+const fs = Npm.require('fs');
+const path = Npm.require('path');
+const Future = Npm.require('fibers/future');
+const _ = Npm.require('lodash');
 
-var throwCompileError = TemplatingTools.throwCompileError;
+const throwCompileError = TemplatingTools.throwCompileError;
 
 class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 
@@ -27,7 +27,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 
   compileOneFile(inputFile) {
     const contents = inputFile.getContentsAsString();
-    var packagePrefix = '';
+    let packagePrefix = '';
 
     if (inputFile.getPackageName()) {
       packagePrefix += '/packages/' + inputFile.getPackageName() + '/';
@@ -42,7 +42,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
         sourceName: inputPath,
         contents: contents
       });
-      var result = this.tagHandlerFunc(tags);
+      const result = this.tagHandlerFunc(tags);
       return result;
     } catch (e) {
       if (e instanceof TemplatingTools.CompileError) {
@@ -59,10 +59,10 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 
 };
 
-parseHtml = function(arg){
-  var contents = arg.contents
-  var parseOptions = {}
-  var parsed = parse5.parse(contents);
+const parseHtml = (arg)=>{
+  const contents = arg.contents
+  const parseOptions = {}
+  const parsed = parse5.parse(contents);
   const tag = {
     tagName: "template",
     attribs: {
@@ -74,8 +74,8 @@ parseHtml = function(arg){
   };
   return tag;
 }
-function handleTags(tags) {
-  var handler = new dissectHtml();
+const handleTags = (tags)=> {
+  const handler = new dissectHtml();
   handler.dissect(tags);
   return handler.dissected;
 }
@@ -95,14 +95,14 @@ class dissectHtml {
     this.sourceName = tag.sourceName;
     const self = this;
     const children = this.document.childNodes || [];
-    for(i=0;i<children.length;i++){
+    for(let i=0;i<children.length;i++){
       const child = children[i];
       switch(child.nodeName){
         case "#documentType":
           break;
         case "html":
           const _children = child.childNodes || [];
-        for(_i=0;_i<_children.length;_i++){
+        for(let _i=0;_i<_children.length;_i++){
           _child = _children[_i];
           switch(_child.nodeName){
             case "head":
@@ -115,7 +115,7 @@ class dissectHtml {
                 }
                 break;
                 case "script":
-                  var result = self.processScripts(__child);
+                  const result = self.processScripts(__child);
                 if(result){
                   return result;
                 }
@@ -180,7 +180,7 @@ class dissectHtml {
         }
         break;
         case "script":
-          var result = self.processScripts(child);
+          const result = self.processScripts(child);
         if(result){
           return result;
         }
@@ -228,7 +228,7 @@ class dissectHtml {
     return url.match(/^(\.\/|\.\.\/)/) ? url : './'+url;
   }
   processLinks(child){
-    var self = this;
+    const self = this;
     if(child.attrs){
       const supportedRels = ["import","stylesheet"];
       const ifImport = _.find(child.attrs, (v) => {
