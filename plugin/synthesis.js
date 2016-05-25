@@ -34,6 +34,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
     }
 
     const inputPath = packagePrefix + inputFile.getPathInPackage();
+    //files inside folders with names demo/test/docs are skipped.
     if(inputPath.match(/\/(demo|test|docs).*\//) && !process.env.FORCESYNTHESIS){
       return null;
     }
@@ -63,6 +64,7 @@ const parseHtml = (arg)=>{
   const contents = arg.contents
   const parseOptions = {}
   const parsed = parse5.parse(contents);
+  //parsed is a json object
   const tag = {
     tagName: "template",
     attribs: {
@@ -86,7 +88,7 @@ class dissectHtml {
       head: '',
       body: '',
       js: '//*synthesis*//\n\n',
-      tailJs:'',
+      tailJs:'', //tailJs is appened last
       bodyAttrs: {}
     };
   }
@@ -127,6 +129,7 @@ class dissectHtml {
               } 
             }));
             const headContents =parse5.serialize(_child);
+            //for files inside client folder html contents can be directly added to dissected.html
             if(self.sourceName.match(/^client\//)){
               self.dissected.head += headContents;
             }
@@ -230,6 +233,7 @@ class dissectHtml {
   processLinks(child){
     const self = this;
     if(child.attrs){
+      //<link rel="import"...> and <link rel="stylesheet"...>
       const supportedRels = ["import","stylesheet"];
       const ifImport = _.find(child.attrs, (v) => {
         return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
@@ -247,16 +251,22 @@ class dissectHtml {
             else{
               switch(ifImport.value){
                 case "import":
+                  //file is imported using require
                   const link = `require('${url}');`;
                 self.dissected.tailJs += "\n\n"+link+"\n\n";
 
                 break;
+                //Processing <link rel="stylesheet" href="filename.css">
                 case "stylesheet":
+                  //absolute file path
                   const url = path.resolve(self.sourceName,'../',hrefAttr.value);
+                //checks if file exists
                 if(fs.existsSync(url)){
                   const contents = fs.readFileSync(url,"utf8");
+                  //css is inlined
                   const minified = contents.replace(/\r?\n|\r/g, "");
                   if(minified){
+                    //link tag is replaced with style tag
                     child = _.extend(child,{
                       nodeName:"style",
                       tagName:"style",
