@@ -12,9 +12,9 @@ class _synthesizer {
       }
 
     }
-  }
-  else{
-    document.write(str);
+    else{
+      document.write(str);
+    }
   }
 }
 Synthesizer = new _synthesizer();
