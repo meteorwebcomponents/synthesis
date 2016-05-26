@@ -129,7 +129,9 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. 
+
+[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for our project.
 
 A sample bower.json (imports/ui/bower.json)
 
