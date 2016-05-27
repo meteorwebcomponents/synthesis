@@ -34,11 +34,13 @@ You can import html using
 2. `<link rel="import" href="./component.html"> `
  
 Script
+
 1. `<script>yourscript goes here</script> `
 
 2. `<script src="component.js"></script>`
 
 Css (its important follow these two methods to confine style inside the component.)
+
 1. `<style>Your style goes here</style>`
 
 2. `<link rel="stylesheet" href="component.css">`
@@ -148,9 +150,36 @@ A sample bower.json (imports/ui/bower.json)
 }
 ```
 
+### Using Polymer from npm instead of bower
+
+Here is a working demo of using npm polymer package instead of bower. 
+
+https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo
+
+`npm install --save @polymer/paper-button`
+
+Before everything else load webcomponents and polymer
+
+```js
+import "webcomponents.js/webcomponents-lite.min.js";
+import "@polymer/polymer/polymer.html";
+```
+
+Use it from js files as 
+```js
+import "@polymer/paper-button/paper-button.html";
+```
+>Please note that the @polymer packages are still in testing stage. And the polymer version is an older one.
+
 ### Demo
+
+#####Using Bower
+
 Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-demo)
 
+#####Using npm 
+
+Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo)
 
 ### Kickstart Your Meteor Polymer projects
 [Kickstart a Meteor/Polymer project](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
