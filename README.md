@@ -29,16 +29,20 @@ Keeps all your components in imports folder
 
 You can import html using 
 
-1. Meteor's `import './component.html';` 
+1. Meteor's `import './component.html';` from js files
 
-2. `<link rel="import" href="./component.html"> `
+2. `<link rel="import" href="./component.html"> `from html files
+
+> Please note that `import 'package/package.html;'` imports from node_modules directory while `<link rel="import" href="package/package.html">` is the same as `import "./package/package.html";`. This is kept like this to go through polymer components in which dependency files inside the same folder are imported as `<link rel="import" href="dependency.html">`
  
 Script
+
 1. `<script>yourscript goes here</script> `
 
 2. `<script src="component.js"></script>`
 
 Css (its important follow these two methods to confine style inside the component.)
+
 1. `<style>Your style goes here</style>`
 
 2. `<link rel="stylesheet" href="component.css">`
@@ -129,7 +133,9 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. 
+
+[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
 
 A sample bower.json (imports/ui/bower.json)
 
@@ -146,9 +152,36 @@ A sample bower.json (imports/ui/bower.json)
 }
 ```
 
+### Using Polymer from npm instead of bower
+
+Here is a working demo of using npm polymer package instead of bower. 
+
+https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo
+
+`npm install --save @polymer/paper-button`
+
+Before everything else load webcomponents and polymer
+
+```js
+import "webcomponents.js/webcomponents-lite.min.js";
+import "@polymer/polymer/polymer.html";
+```
+
+Use it from js files as 
+```js
+import "@polymer/paper-button/paper-button.html";
+```
+>Please note that the @polymer packages are still in testing stage. And the polymer version is an older one.
+
 ### Demo
+
+#####Using Bower
+
 Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-demo)
 
+#####Using npm 
+
+Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo)
 
 ### Kickstart Your Meteor Polymer projects
 [Kickstart a Meteor/Polymer project](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
