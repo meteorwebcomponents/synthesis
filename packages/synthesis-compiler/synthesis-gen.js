@@ -6,9 +6,9 @@ class _synthesizer{
     toHead = !!toHead;
     const htmlStr = JSON.stringify(html);
     return `
-    Synthesizer.render(${htmlStr},${toHead});
+    Synthesis.render(${htmlStr},${toHead});
     `
   }
 
 }
-Synthesizer = new _synthesizer();
+export const Synthesizer = new _synthesizer();

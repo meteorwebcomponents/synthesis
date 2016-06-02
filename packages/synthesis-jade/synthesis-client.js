@@ -17,4 +17,4 @@ class _synthesizer {
     }
   }
 }
-Synthesizer = new _synthesizer();
+Synthesis = new _synthesizer();
