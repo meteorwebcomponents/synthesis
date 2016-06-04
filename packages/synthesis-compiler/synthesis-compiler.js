@@ -87,20 +87,25 @@ class dissectHtml {
     });
 
     const heads = $('head');
+if(heads.length >0 ){
     heads.each(function(){
       self.dissected.head += $(this).html();
       $(this).remove();
     });
+}
     const body = $('body');
+if(body.length >0 ){
     body.each(function(){
       self.dissected.body += $(this).html();
       $(this).remove();
     });
-    const domModule = $('dom-module');
-    domModule.each(function(){
-      self.dissected.body += $(this).clone().wrap('div').parent().html();
-    });
-
+}
+    //const domModule = $('dom-module');
+//if(domModule.length >0 ){
+    //domModule.each(function(){
+      //self.dissected.body += $(this).clone().wrap('div').parent().html();
+    //});
+//}
     this.dissected.body += $.html();
 
     if(!this.sourceName.match(/^client\//)){
