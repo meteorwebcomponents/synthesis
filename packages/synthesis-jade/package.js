@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-jade',
-  version: '1.0.26',
+  version: '0.0.1',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'

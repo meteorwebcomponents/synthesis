@@ -4,24 +4,23 @@
 // applications. See synthesis-compiler-tests.js for an example of importing.
 
 import { Synthesizer } from './synthesis-gen.js';
-const parse5 = Npm.require('parse5');
 const fs = Npm.require('fs');
 const path = Npm.require('path');
 const Future = Npm.require('fibers/future');
-const _ = Npm.require('lodash');
+
+const cheerio = require('cheerio');
+const htmlMinifier = require('html-minifier');
 
 export const parseHtml = (arg)=>{
-  const contents = arg.contents
+  const contents = arg.contents.replace(/\<(\?xml|(\!DOCTYPE[^\>\[]+(\[[^\]]+)?))+[^>]+\>/gi, '');
   const parseOptions = {}
-  const parsed = parse5.parse(contents);
   //parsed is a json object
   const tag = {
     tagName: "template",
     attribs: {
       id : arg.sourceName
     },
-    contents: parsed,
-    fileContents: arg.contents,
+    contents:contents,
     sourceName: arg.sourceName
   };
   return tag;
@@ -43,217 +42,95 @@ class dissectHtml {
     };
   }
   dissect(tag){
-    this.document = tag.contents;
+    this.contents = tag.contents;
+    const $ = cheerio.load(this.contents);
     this.sourceName = tag.sourceName;
     const self = this;
-    const children = this.document.childNodes || [];
-    for(let i=0;i<children.length;i++){
-      const child = children[i];
-      switch(child.nodeName){
-        case "#documentType":
-          break;
-        case "html":
-          const _children = child.childNodes || [];
-        for(let _i=0;_i<_children.length;_i++){
-          _child = _children[_i];
-          switch(_child.nodeName){
-            case "head":
-              _child.childNodes = _.compact(_.map(_child.childNodes,(__child) => {
-              switch (__child.nodeName){
-                case "link":
-                  __child = self.processLinks(__child);
-                if(__child){
-                  return __child;
-                }
-                break;
-                case "script":
-                  const result = self.processScripts(__child);
-                if(result){
-                  return result;
-                }
-                break;
-                default:
-                  return __child;
-                break;
-
-              } 
-            }));
-            const headContents =parse5.serialize(_child);
-            //for files inside client folder html contents can be directly added to dissected.html
-            if(self.sourceName.match(/^client\//)){
-              self.dissected.head += headContents;
-            }
-            else{
-
-              self.dissected.js += "\n\n"+Synthesizer.generateJS(headContents,true) +"\n\n";
-            }
-            break;
-            case "body":
-              const body = _child;
-            body.attrs.forEach((attr) => {
-              if (self.dissected.bodyAttrs.hasOwnProperty(attr.name) && self.dissected.bodyAttrs[attr.name] !== attr.value) {
-              }
-              else{
-                self.dissected.bodyAttrs[attr.name] = attr.value;
-              }
-            });
-            delete body.attrs;
-            body.childNodes = self.processChildNodes(body.childNodes);
-            const bodyContents = parse5.serialize(body);
-            if(self.sourceName.match(/^client\//)){
-              self.dissected.body += bodyContents;
-            }
-            else{
-              self.dissected.js += "\n\n"+Synthesizer.generateJS(bodyContents) +"\n\n";
-            }
-            break;
-          }
-        };
-        break;
+    const imports = $('link[rel="import"]');
+    const scripts = $('script');
+    const cssImport = $('link[rel="stylesheet"]');
+    imports.each(function(){
+      const filePath = $(this).attr('href');
+      if(filePath){
+        self.dissected.tailJs += `\nrequire("${self.importableUrl(filePath)}");\n`;
+        $(this).remove();
       }
-    };
-    this.dissected.js += "\n\n"+this.dissected.tailJs+"\n\n";
-
-  }
-  processChildNodes(childNodes){
-    const self = this;
-    return _.compact(_.map(childNodes,(child) => {
-      switch (child.nodeName) {
-        case "template":
-          const isWalkable = child.content &&child.content.nodeName == "#document-fragment" && child.content.childNodes;
-        if(isWalkable){
-          child.content.childNodes = self.processChildNodes(child.content.childNodes);
-        }
-        return child;
-        break;
-        case "link":
-          child = self.processLinks(child);
-        if(child){
-          return child;
-        }
-        break;
-        case "script":
-          const result = self.processScripts(child);
-        if(result){
-          return result;
-        }
-        break;
-        case "dom-module":
-          if(child.childNodes){
-          child.childNodes = self.processChildNodes(child.childNodes);
-        }
-        return child;
-        break;
-
-        default:
-          return child;
-        break;
-      }
-    }));           
-
-
-  } 
-  processScripts(child){
-    const self = this;
-    const importSource = _.find(child.attrs, (v) => {
-      return (v.name == "src");
     });
-    if(importSource && importSource.value){
-      const importableUrl = self.importableUrl(importSource.value);
-      if(!importableUrl){
-        return child;
+    cssImport.each(function(){
+
+      const filePath = $(this).attr('href');
+      if(filePath){
+        const url = path.resolve(self.sourceName,'../',filePath);
+        //checks if file exists
+        if(fs.existsSync(url)){
+          const css = fs.readFileSync(url,"utf8");
+          const newTag = $(`<style>${css}</style>`);
+          $(this).replaceWith(newTag);
+        }
+      }
+    });
+    scripts.each(function(){
+      const filePath = $(this).attr('src');
+      if(filePath){
+        const url = path.resolve(self.sourceName,'../',filePath);
+        //checks if file exists
+        if(fs.existsSync(url)){
+
+          self.dissected.tailJs += `\nrequire("${self.importableUrl(filePath)}");\n`;
+          $(this).remove();
+        }
       }
       else{
-        self.dissected.tailJs +=  `\n\nrequire('${importableUrl}');\n\n`;
+        self.dissected.tailJs += `\n${$(this).html()}\n` || '';
+        $(this).remove();
       }
-    }
-    else{
+    });
 
-      self.dissected.tailJs += "\n\n"+parse5.serialize(child)+"\n\n";
+    const heads = $('head');
+    heads.each(function(){
+      self.dissected.head += $(this).html();
+      $(this).remove();
+    });
+    const body = $('body');
+    body.each(function(){
+      self.dissected.body += $(this).html();
+      $(this).remove();
+    });
+    const domModule = $('dom-module');
+    domModule.each(function(){
+      self.dissected.body += $(this).clone().wrap('div').parent().html();
+    });
+
+    this.dissected.body += $.html();
+
+    if(!this.sourceName.match(/^client\//)){
+      self.dissected.js += `\n\n${Synthesizer.generateJS(this.dissected.head,true)}\n\n`;
+    self.dissected.js += `\n\n${Synthesizer.generateJS(this.dissected.body,)}\n\n`;
     }
 
+    this.dissected.js += "\n\n"+this.dissected.tailJs+"\n\n";
   }
-
   importableUrl (url){
     if(url.match(/^(\/|https?:\/)/)){
       return false;
     }
     return url.match(/^(\.\/|\.\.\/)/) ? url : './'+url;
   }
-  processLinks(child){
-    const self = this;
-    if(child.attrs){
-      //<link rel="import"...> and <link rel="stylesheet"...>
-      const supportedRels = ["import","stylesheet"];
-      const ifImport = _.find(child.attrs, (v) => {
-        return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
-      });
-      if(ifImport){
-        const hrefAttr = _.find(child.attrs, (v) => {
-          return v.name == "href";
-        });
-        if(hrefAttr){
-          if(hrefAttr.value){
-            const url = self.importableUrl(hrefAttr.value);
-            if(!url){
-              return child;
-            }
-            else{
-              switch(ifImport.value){
-                case "import":
-                  //file is imported using require
-                  const link = `require('${url}');`;
-                self.dissected.tailJs += "\n\n"+link+"\n\n";
-
-                break;
-                //Processing <link rel="stylesheet" href="filename.css">
-                case "stylesheet":
-                  //absolute file path
-                  const url = path.resolve(self.sourceName,'../',hrefAttr.value);
-                //checks if file exists
-                if(fs.existsSync(url)){
-                  const contents = fs.readFileSync(url,"utf8");
-                  //css is inlined
-                  const minified = contents.replace(/\r?\n|\r/g, "");
-                  if(minified){
-                    //link tag is replaced with style tag
-                    child = _.extend(child,{
-                      nodeName:"style",
-                      tagName:"style",
-                      attrs:[],
-                      childNodes:[
-                        {nodeName:"#text",
-                          value:minified
-                        }
-                      ]
-                    });
-                    return child;
-                  }
-
-                }
-                return child;
-
-                break;
-
-              }
-            }
-          }
-          else{
-            throwCompileError("link import href is blank");
-          }
-        }
-        else{
-          throwCompileError("No href for link import");
-        }
-      }
-      else{
-        return child;
-      }
-    }
-    else{
-      return child;
-    }
-
+  minify(html) {
+    // Just parse the html to make sure it is correct before minifying
+    HTMLTools.parseFragment(html);
+    //console.log(HTMLTools)
+    return htmlMinifier.minify(html, {
+      collapseWhitespace: true,
+      conservativeCollapse: true,
+      minifyCSS: true,
+      minifyJS: true,
+      processScripts: ['text/template'],
+      removeAttributeQuotes: false,
+      caseSensitive: true,
+      customAttrSurround: [[/#/, /(?:)/], [/\*/, /(?:)/], [/\[?\(?/, /(?:)/]],
+      customAttrAssign: [/\)?\]?=/]
+    });
   }
 
 }

@@ -9,6 +9,9 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.3');
   api.use('ecmascript');
+  api.use('caching-compiler@1.0.0');
+  api.use('html-tools@1.0.7');
+
   api.mainModule('synthesis-compiler.js','server');
 });
 
@@ -20,6 +23,6 @@ Package.onTest(function(api) {
 });
 
 Npm.depends({
-  'lodash':'4.11.1',
-  'parse5': '2.1.5'
+  'cheerio': '0.20.0',
+  'html-minifier': '0.8.0'
 })

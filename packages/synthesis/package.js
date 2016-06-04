@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis',
-  version: '1.0.26',
+  version: '1.0.27',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'
