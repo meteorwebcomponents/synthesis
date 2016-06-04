@@ -7,6 +7,8 @@ Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 `meteor remove blaze-html-templates`
 
+> If you want to use blaze along with synthesis use **[mwc:blaze-html-templating](https://github.com/meteorwebcomponents/blaze-html-templates)** . demo - [blaze+polymer](https://github.com/meteorwebcomponents/synthesis-demo/tree/blaze-polymer) 
+
 Install synthesis
 
 `meteor add mwc:synthesis`
