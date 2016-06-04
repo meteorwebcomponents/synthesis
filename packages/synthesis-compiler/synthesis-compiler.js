@@ -49,6 +49,7 @@ class dissectHtml {
     const imports = $('link[rel="import"]');
     const scripts = $('script');
     const cssImport = $('link[rel="stylesheet"]');
+if(imports.length >0 ){
     imports.each(function(){
       const filePath = $(this).attr('href');
       if(filePath){
@@ -56,6 +57,9 @@ class dissectHtml {
         $(this).remove();
       }
     });
+}
+
+if(cssImport.length >0 ){
     cssImport.each(function(){
 
       const filePath = $(this).attr('href');
@@ -69,6 +73,8 @@ class dissectHtml {
         }
       }
     });
+}
+if(scripts.length >0 ){
     scripts.each(function(){
       const filePath = $(this).attr('src');
       if(filePath){
@@ -85,7 +91,7 @@ class dissectHtml {
         $(this).remove();
       }
     });
-
+}
     const heads = $('head');
 if(heads.length >0 ){
     heads.each(function(){
