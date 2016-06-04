@@ -17,7 +17,7 @@ Does not use any regex to parse html. :)
 3. Handles external css files (link rel stylesheet)
 4. Handles template tags.
 5. Handles loading order of html and js inside the polymer files
-4. Adds components to body during runtime.
+4. Adds components to document during runtime.
 
 ## Installation
 
