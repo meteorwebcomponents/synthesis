@@ -1,11 +1,33 @@
 # Synthesis is meteor + polymer
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/aruntk/meteorwebcomponents?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## About
+
+Synthesis helps you use polymer inside meteor.
+
+### Under the hood
+
+Synthesis uses [parse5](https://github.com/inikulin/parse5) which parses HTML the way the latest version of your browser does. 
+Does not use any regex to parse html. :)
+
+> A version that uses cheerio instead of parse 	&rArr; [synthesis-using-cheerio](https://github.com/meteorwebcomponents/synthesis/tree/cheerio).
+
+#####Main functions
+
+1. Handles html link imports which polymer uses to add dependency files.
+2. Handles external script files (script src)
+3. Handles external css files (link rel stylesheet)
+4. Handles template tags.
+5. Handles loading order of html and js inside the polymer files
+4. Adds components to document during runtime.
 
 ## Installation
 
 Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 `meteor remove blaze-html-templates`
+
+> If you want to use blaze along with synthesis use **[mwc:blaze-html-templating](https://github.com/meteorwebcomponents/blaze-html-templates)** . demo - [blaze+polymer](https://github.com/meteorwebcomponents/synthesis-demo/tree/blaze-polymer) 
 
 Install synthesis
 
