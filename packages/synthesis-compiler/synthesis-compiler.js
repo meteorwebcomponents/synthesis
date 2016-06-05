@@ -1,10 +1,6 @@
-// Write your package code here!
-
-// Variables exported by this module can be imported by other packages and
-// applications. See synthesis-compiler-tests.js for an example of importing.
-
 import { Synthesizer } from './synthesis-gen.js';
 const parse5 = Npm.require('parse5');
+const polyclean = Npm.require('polyclean');
 const fs = Npm.require('fs');
 const path = Npm.require('path');
 const Future = Npm.require('fibers/future');
@@ -52,32 +48,15 @@ class dissectHtml {
       switch(child.nodeName){
         case "#documentType":
           break;
+        case "#comment":
+          break;
         case "html":
           const _children = child.childNodes || [];
         for(let _i=0;_i<_children.length;_i++){
           _child = _children[_i];
           switch(_child.nodeName){
             case "head":
-              _child.childNodes = _.compact(_.map(_child.childNodes,(__child) => {
-              switch (__child.nodeName){
-                case "link":
-                  __child = self.processLinks(__child);
-                if(__child){
-                  return __child;
-                }
-                break;
-                case "script":
-                  const result = self.processScripts(__child);
-                if(result){
-                  return result;
-                }
-                break;
-                default:
-                  return __child;
-                break;
-
-              } 
-            }));
+              _child.childNodes = self.processChildNodes(_child.childNodes);
             const headContents =parse5.serialize(_child);
             //for files inside client folder html contents can be directly added to dissected.html
             if(self.sourceName.match(/^client\//)){
@@ -138,13 +117,25 @@ class dissectHtml {
           return result;
         }
         break;
+        case "style":
+          if(child.childNodes && child.childNodes.length){
+          const css = child.childNodes[0].value;
+          const result = self.processStyle(css);
+          if(result){
+            child.childNodes[0].value = result;
+          }
+        }
+        return child;
+
+        break;
         case "dom-module":
           if(child.childNodes){
           child.childNodes = self.processChildNodes(child.childNodes);
         }
         return child;
         break;
-
+        case "#comment":
+          break;
         default:
           return child;
         break;
@@ -153,6 +144,9 @@ class dissectHtml {
 
 
   } 
+  processStyle(css){
+    return polyclean.stripCss(css);
+  }
   processScripts(child){
     const self = this;
     const importSource = _.find(child.attrs, (v) => {
@@ -214,7 +208,7 @@ class dissectHtml {
                 if(fs.existsSync(url)){
                   const contents = fs.readFileSync(url,"utf8");
                   //css is inlined
-                  const minified = contents.replace(/\r?\n|\r/g, "");
+                  const minified = self.processStyle(contents);
                   if(minified){
                     //link tag is replaced with style tag
                     child = _.extend(child,{

@@ -1,7 +1,7 @@
 import { parseHtml , handleTags } from 'meteor/mwc:synthesis-compiler';
 
 Plugin.registerCompiler({
-  extensions: ['html'],
+  extensions: ['html','htm'],
   archMatching: 'web',
   isTemplate: true
 }, ()=>{
