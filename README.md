@@ -10,6 +10,8 @@ Synthesis helps you use polymer inside meteor.
 Synthesis uses [parse5](https://github.com/inikulin/parse5) which parses HTML the way the latest version of your browser does. 
 Does not use any regex to parse html. :)
 
+> A version that uses cheerio instead of parse 	&rArr; [synthesis-using-cheerio](https://github.com/meteorwebcomponents/synthesis/tree/cheerio).
+
 #####Main functions
 
 1. Handles html link imports which polymer uses to add dependency files.
