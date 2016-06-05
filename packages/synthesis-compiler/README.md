@@ -1,12 +1,33 @@
-
 # Synthesis is meteor + polymer
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/aruntk/meteorwebcomponents?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## About
+
+Synthesis helps you use polymer inside meteor.
+
+### Under the hood
+
+Synthesis uses [parse5](https://github.com/inikulin/parse5) which parses HTML the way the latest version of your browser does. 
+Does not use any regex to parse html. :)
+
+> A version that uses cheerio instead of parse 	&rArr; [synthesis-using-cheerio](https://github.com/meteorwebcomponents/synthesis/tree/cheerio).
+
+#####Main functions
+
+1. Handles html link imports which polymer uses to add dependency files.
+2. Handles external script files (script src)
+3. Handles external css files (link rel stylesheet)
+4. Handles template tags.
+5. Handles loading order of html and js inside the polymer files
+4. Adds components to document during runtime.
 
 ## Installation
 
 Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 `meteor remove blaze-html-templates`
+
+> If you want to use blaze along with synthesis use **[mwc:blaze-html-templating](https://github.com/meteorwebcomponents/blaze-html-templates)** . demo - [blaze+polymer](https://github.com/meteorwebcomponents/synthesis-demo/tree/blaze-polymer) 
 
 Install synthesis
 
@@ -30,16 +51,20 @@ Keeps all your components in imports folder
 
 You can import html using 
 
-1. Meteor's `import './component.html';` 
+1. Meteor's `import './component.html';` from js files
 
-2. `<link rel="import" href="./component.html"> `
+2. `<link rel="import" href="./component.html"> `from html files
+
+> Please note that `import 'package/package.html;'` imports from node_modules directory while `<link rel="import" href="package/package.html">` is the same as `import "./package/package.html";`. This is kept like this to go through polymer components in which dependency files inside the same folder are imported as `<link rel="import" href="dependency.html">`
  
 Script
+
 1. `<script>yourscript goes here</script> `
 
 2. `<script src="component.js"></script>`
 
 Css (its important follow these two methods to confine style inside the component.)
+
 1. `<style>Your style goes here</style>`
 
 2. `<link rel="stylesheet" href="component.css">`
@@ -130,7 +155,9 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. 
+
+[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
 
 A sample bower.json (imports/ui/bower.json)
 
@@ -147,9 +174,36 @@ A sample bower.json (imports/ui/bower.json)
 }
 ```
 
+### Using Polymer from npm instead of bower
+
+Here is a working demo of using npm polymer package instead of bower. 
+
+https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo
+
+`npm install --save @polymer/paper-button`
+
+Before everything else load webcomponents and polymer
+
+```js
+import "webcomponents.js/webcomponents-lite.min.js";
+import "@polymer/polymer/polymer.html";
+```
+
+Use it from js files as 
+```js
+import "@polymer/paper-button/paper-button.html";
+```
+>Please note that the @polymer packages are still in testing stage. And the polymer version is an older one.
+
 ### Demo
+
+#####Using Bower
+
 Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-demo)
 
+#####Using npm 
+
+Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo)
 
 ### Kickstart Your Meteor Polymer projects
 [Kickstart a Meteor/Polymer project](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
