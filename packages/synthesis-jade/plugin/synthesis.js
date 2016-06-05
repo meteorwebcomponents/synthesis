@@ -34,7 +34,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
       return null;
     }
     try {
-      const fn = jade.compile(contents);
+      const fn = jade.compile(contents, {filename: inputFile.getPathInPackage()});
       const parsedJade = fn();
       const tags = this.tagScannerFunc({
         sourceName: inputPath,
