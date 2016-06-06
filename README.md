@@ -18,6 +18,7 @@ Does not use any regex to parse html. :)
 2. Handles external script files (script src)
 3. Handles external css files (link rel stylesheet)
 4. Handles template tags.
+5. Removes comments and unecessary whitespaces.
 5. Handles loading order of html and js inside the polymer files
 4. Adds components to document during runtime.
 
