@@ -238,7 +238,7 @@ Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-we
 
 ### FAQ
 
-Q:  When I tried to set window.Polymer = {lazyRegister:true,dom:"shadow"} it resulted in error. 
+Q:  When I tried to set `window.Polymer = {lazyRegister:true,dom:"shadow"}` it resulted in error. 
 
 Ans : Refer [polymer settings](https://github.com/meteorwebcomponents/synthesis#polymer-settings)
 
