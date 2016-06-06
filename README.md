@@ -47,11 +47,11 @@ Refer http://guide.meteor.com
 
 Application Structure http://guide.meteor.com/structure.html.
 
-Keeps all your components in imports folder 
+Keep all your components in imports folder 
 
 You can import html using 
 
-1. Meteor's `import './component.html';` from js files
+1. `import './component.html';` from js files
 
 2. `<link rel="import" href="./component.html"> `from html files
 
