@@ -230,6 +230,9 @@ Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebco
 
 ### TODO
 
+### FAQ
+
+1. When I tried to set window.Polymer = {lazyRegister:true,dom:"shadow"} it resulted in error.
 
 ### Social
 
