@@ -172,9 +172,7 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. 
-
-[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. Refer the [FAQ](https://github.com/meteorwebcomponents/synthesis#faq)
 
 A sample bower.json (imports/ui/bower.json)
 
@@ -230,10 +228,6 @@ Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebco
 
 ### TODO
 
-### FAQ
-
-1. When I tried to set window.Polymer = {lazyRegister:true,dom:"shadow"} it resulted in error.
-
 ### Social
 
 Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
@@ -242,3 +236,24 @@ Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-we
 
 > NO NEED to use any VULCANIZING tools. Synthesis handles everything
 
+### FAQ
+
+Q:  When I tried to set window.Polymer = {lazyRegister:true,dom:"shadow"} it resulted in error. 
+
+Ans : Refer [polymer settings](https://github.com/meteorwebcomponents/synthesis#polymer-settings)
+
+Q:  When I added (a) bower component(s) build time became painstakingly high. 
+
+Ans : The component(s) you've added might have many js files. meteor ecmascripts gets frozen/takes a long time when the number of js files are very high. Refer the issue https://github.com/meteor/meteor/issues/6859. In my testings with 300 html files synthesis ran pretty fast. Its the meteor js handlers which create this issue.
+
+In console (pwd = /imports/ui)
+```sh
+find bower_components -name \*.js | wc -l
+```
+Try to find out which package contains large number of js files. Delete unecessary files and keep a local copy. 
+
+[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
+
+Q: Is it possible to use npm instead of bower for loading polymer and components
+
+Ans : Yes there is. Refer https://github.com/meteorwebcomponents/synthesis#using-polymer-from-npm-instead-of-bower
