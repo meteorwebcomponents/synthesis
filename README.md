@@ -258,3 +258,15 @@ Try to find out which package contains large number of js files. Delete unecessa
 Q: Is it possible to use npm instead of bower for loading polymer and components
 
 Ans : Yes there is. Refer https://github.com/meteorwebcomponents/synthesis#using-polymer-from-npm-instead-of-bower
+
+Q: Can I use Polymer and blaze together?
+
+Ans: You can. If you want to use blaze along with synthesis use **[mwc:blaze-html-templating](https://github.com/meteorwebcomponents/blaze-html-templates)** . demo - [blaze+polymer](https://github.com/meteorwebcomponents/synthesis-demo/tree/blaze-polymer) 
+
+Use blaze.html extension for blaze files.
+
+But there are some compatibility issue https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536/30?u=aruntk
+
+Q: I love blaze's template level subscriptions and spacebars. I dont want to lose these feature when I port my app to polymer. Any help?
+
+Ans : In my experience I find nothing that polymer cannot do which blaze can. Polymer is very easy to learn and while porting your app you'll find yourself copy pasting most of your code. For every blaze function they have solutions in polymer. We have got you covered when it comed to meteor data and subscriptions (including template level subs) Refer [mixin](https://github.com/meteorwebcomponents/mixin) . 
