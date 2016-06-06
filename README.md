@@ -43,6 +43,23 @@ You can optionally use these packages from meteorwebcomponents
 
 ## Usage
 
+### Polymer Settings
+
+Create /lib/settings.js
+
+Why lib directory ? Settings code should run before anything else. 
+
+```js
+/* /lib/settings.js */
+if(Meteor.isClient){
+  window.Polymer = {
+    //dom: 'shadow',
+    lazyRegister: true
+  };
+}
+```
+### App Structure
+
 Refer http://guide.meteor.com
 
 Application Structure http://guide.meteor.com/structure.html.
