@@ -173,7 +173,7 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. Refer the [FAQ](https://github.com/meteorwebcomponents/synthesis#faq)
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. Refer the [FAQ](#faq)
 
 A sample bower.json (imports/ui/bower.json)
 
@@ -241,7 +241,7 @@ Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-we
 
 Q:  When I tried to set `window.Polymer = {lazyRegister:true,dom:"shadow"}` it resulted in error. 
 
-Ans : Refer [polymer settings](https://github.com/meteorwebcomponents/synthesis#polymer-settings)
+Ans : Refer [polymer settings](#polymer-settings)
 
 Q:  When I added (a) bower component(s) build time became painstakingly high. 
 
@@ -257,7 +257,7 @@ Try to find out which package contains large number of js files. Delete unecessa
 
 Q: Is it possible to use npm instead of bower for loading polymer and components
 
-Ans : Yes there is. Refer https://github.com/meteorwebcomponents/synthesis#using-polymer-from-npm-instead-of-bower
+Ans : Yes there is. Refer [using polymer instead of bower](#using-polymer-from-npm-instead-of-bower)
 
 Q: Can I use Polymer and blaze together?
 
