@@ -263,7 +263,7 @@ Ans: You can. If you want to use blaze along with synthesis use **[mwc:blaze-htm
 
 Use blaze.html extension for blaze files.
 
-But there are some compatibility issue https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536/30?u=aruntk
+But there are some compatibility issues https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536/30?u=aruntk
 
 Q: I love blaze's template level subscriptions and spacebars. I dont want to lose these feature when I port my app to polymer. Any help?
 
