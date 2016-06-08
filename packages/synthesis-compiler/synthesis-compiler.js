@@ -176,68 +176,49 @@ class dissectHtml {
   }
   processLinks(child){
     const self = this;
-    if(child.attrs){
-      //<link rel="import"...> and <link rel="stylesheet"...>
-      const supportedRels = ["import","stylesheet"];
-      const ifImport = _.find(child.attrs, (v) => {
-        return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
+    //<link rel="import"...> and <link rel="stylesheet"...>
+    const supportedRels = ["import","stylesheet"];
+    const ifImport = _.find(child.attrs, (v) => {
+
+      return (v.name == "rel" && supportedRels.indexOf(v.value) > -1)
+    });
+
+    if(ifImport){
+      const hrefAttr = _.find(child.attrs, (v) => {
+        return v.name == "href";
       });
-      if(ifImport){
-        const hrefAttr = _.find(child.attrs, (v) => {
-          return v.name == "href";
-        });
-        if(hrefAttr){
-          if(hrefAttr.value){
-            const url = self.importableUrl(hrefAttr.value);
+      if(hrefAttr){
+        if(hrefAttr.value){
+          switch(ifImport.value){
+            case "import":
+              //file is imported using require
+              const url = self.importableUrl(hrefAttr.value);
             if(!url){
               return child;
             }
-            else{
-              switch(ifImport.value){
-                case "import":
-                  //file is imported using require
-                  const link = `require('${url}');`;
-                self.dissected.tailJs += "\n\n"+link+"\n\n";
+            const typeAttr = _.find(child.attrs, (v) => {
+              return (v.name == "type");
+            });
 
+            if(typeAttr){
+              switch(typeAttr.value){
+                case "css":
+                  return self.processCssImport(hrefAttr,child);
                 break;
-                //Processing <link rel="stylesheet" href="filename.css">
-                case "stylesheet":
-                  //absolute file path
-                  const url = path.resolve(self.sourceName,'../',hrefAttr.value);
-                //checks if file exists
-                if(fs.existsSync(url)){
-                  const contents = fs.readFileSync(url,"utf8");
-                  //css is inlined
-                  const minified = self.processStyle(contents);
-                  if(minified){
-                    //link tag is replaced with style tag
-                    child = _.extend(child,{
-                      nodeName:"style",
-                      tagName:"style",
-                      attrs:[],
-                      childNodes:[
-                        {nodeName:"#text",
-                          value:minified
-                        }
-                      ]
-                    });
-                    return child;
-                  }
-
-                }
-                return child;
-
-                break;
-
               }
+
             }
+            const link = `require('${url}');`;
+            self.dissected.tailJs += "\n\n"+link+"\n\n";
+
+            break;
+            //Processing <link rel="stylesheet" href="filename.css">
+            case "stylesheet":
+              //absolute file path
+              return self.processCssImport(hrefAttr,child);
+            break;
+
           }
-          else{
-            throwCompileError("link import href is blank");
-          }
-        }
-        else{
-          throwCompileError("No href for link import");
         }
       }
       else{
@@ -247,6 +228,33 @@ class dissectHtml {
     else{
       return child;
     }
+
+  }
+  processCssImport(hrefAttr,child){
+    const url = path.resolve(this.sourceName,'../',hrefAttr.value);
+    //checks if file exists
+    if(fs.existsSync(url)){
+      const contents = fs.readFileSync(url,"utf8");
+      //css is inlined
+      const minified = this.processStyle(contents);
+      if(minified){
+        //link tag is replaced with style tag
+        child = _.extend(child,{
+          nodeName:"style",
+          tagName:"style",
+          attrs:[],
+          childNodes:[
+            {nodeName:"#text",
+              value:minified
+            }
+          ]
+        });
+        return child;
+      }
+
+    }
+    return child;
+
 
   }
 
