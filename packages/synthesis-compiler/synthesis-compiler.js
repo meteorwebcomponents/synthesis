@@ -96,7 +96,8 @@ class dissectHtml {
   }
   processChildNodes(childNodes){
     const self = this;
-    return _.compact(_.map(childNodes,(child) => {
+    let pushNodes = []
+    let processedNodes =  _.compact(_.map(childNodes,(child) => {
       switch (child.nodeName) {
         case "template":
           const isWalkable = child.content &&child.content.nodeName == "#document-fragment" && child.content.childNodes;
@@ -134,6 +135,16 @@ class dissectHtml {
         }
         return child;
         break;
+        case "div":
+          const attrs = _.filter(child.attrs, function(o) { return (o.name == "hidden" || o.name =="by-vulcanize"); });
+        if(attrs.length >= 2){
+          const _childNodes = self.processChildNodes(child.childNodes);
+          pushNodes = pushNodes.concat(_childNodes);
+        }
+        else{
+          return child;
+        }
+        break;
         case "#comment":
           break;
         default:
@@ -141,7 +152,7 @@ class dissectHtml {
         break;
       }
     }));           
-
+    return processedNodes.concat(pushNodes);
 
   } 
   processStyle(css){

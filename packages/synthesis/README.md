@@ -18,6 +18,7 @@ Does not use any regex to parse html. :)
 2. Handles external script files (script src)
 3. Handles external css files (link rel stylesheet)
 4. Handles template tags.
+5. Removes comments and unecessary whitespaces.
 5. Handles loading order of html and js inside the polymer files
 4. Adds components to document during runtime.
 
@@ -43,15 +44,30 @@ You can optionally use these packages from meteorwebcomponents
 
 ## Usage
 
+### Polymer Settings
+
+Create client/lib/settings.js
+
+Why lib directory ? Settings code should run before anything else. 
+
+```js
+/* client/lib/settings.js */
+window.Polymer = {
+  //dom: 'shadow',
+  lazyRegister: true
+};
+```
+### App Structure
+
 Refer http://guide.meteor.com
 
 Application Structure http://guide.meteor.com/structure.html.
 
-Keeps all your components in imports folder 
+Keep all your components in imports folder 
 
 You can import html using 
 
-1. Meteor's `import './component.html';` from js files
+1. `import './component.html';` from js files
 
 2. `<link rel="import" href="./component.html"> `from html files
 
@@ -155,9 +171,7 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. 
-
-[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. Refer the [FAQ](#faq)
 
 A sample bower.json (imports/ui/bower.json)
 
@@ -213,7 +227,6 @@ Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebco
 
 ### TODO
 
-
 ### Social
 
 Gitter - [meteorwebcomponents](https://gitter.im/aruntk/meteorwebcomponents?utm_source=share-link&utm_medium=link&utm_campaign=share-link)
@@ -222,3 +235,36 @@ Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-we
 
 > NO NEED to use any VULCANIZING tools. Synthesis handles everything
 
+### FAQ
+
+Q:  When I tried to set `window.Polymer = {lazyRegister:true,dom:"shadow"}` it resulted in error. 
+
+Ans : Refer [polymer settings](#polymer-settings)
+
+Q:  When I added (a) bower component(s) build time became painstakingly high. 
+
+Ans : The component(s) you've added might have many js files. meteor ecmascripts gets frozen/takes a long time when the number of js files are very high. Refer the issue https://github.com/meteor/meteor/issues/6859. In my testings with 300 html files synthesis ran pretty fast. Its the meteor js handlers which create this issue.
+
+In console (pwd = /imports/ui)
+```sh
+find bower_components -name \*.js | wc -l
+```
+Try to find out which package contains large number of js files. Delete unecessary files and keep a local copy. 
+
+[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
+
+Q: Is it possible to use npm instead of bower for loading polymer and components
+
+Ans : Yes there is. Refer [using polymer instead of bower](#using-polymer-from-npm-instead-of-bower)
+
+Q: Can I use Polymer and blaze together?
+
+Ans: You can. If you want to use blaze along with synthesis use **[mwc:blaze-html-templating](https://github.com/meteorwebcomponents/blaze-html-templates)** . demo - [blaze+polymer](https://github.com/meteorwebcomponents/synthesis-demo/tree/blaze-polymer) 
+
+Use blaze.html extension for blaze files.
+
+But there are some compatibility issues https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536/30?u=aruntk
+
+Q: I love blaze's template level subscriptions and spacebars. I dont want to lose these features when I port my app to polymer. Any help?
+
+Ans : In my experience I find nothing that polymer cannot do which blaze can. Polymer is very easy to learn and while porting your app you'll find yourself copy pasting most of your code. For every blaze function they have solutions in polymer. We have got you covered when it comed to meteor data and subscriptions (including template level subs) Refer [mixin](https://github.com/meteorwebcomponents/mixin) . 
