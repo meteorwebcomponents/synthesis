@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-compiler',
-  version: '1.0.30',
+  version: '1.0.36',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'
@@ -9,6 +9,7 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.3');
   api.use('ecmascript');
+  api.use('babel-compiler')
   api.mainModule('synthesis-compiler.js','server');
 });
 

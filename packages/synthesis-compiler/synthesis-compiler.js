@@ -174,9 +174,17 @@ class dissectHtml {
     }
     else{
 
-      self.dissected.tailJs += "\n\n"+parse5.serialize(child)+"\n\n";
+      self.dissected.tailJs += "\n\n"+self.babelJs(parse5.serialize(child))+"\n\n";
     }
 
+  }
+
+  babelJs(js){
+    const babelOptions = Babel.getDefaultOptions();
+    const prod = process.env.NODE_ENV ==="production";
+    const external = this.sourceName.match(/(bower_components|node_modules)\//);
+    const buildFile = this.sourceName === "imports/ui/build.html";
+    return (prod && !external && !buildFile ) ? Babel.compile(js, babelOptions).code : js;
   }
 
   importableUrl (url){
