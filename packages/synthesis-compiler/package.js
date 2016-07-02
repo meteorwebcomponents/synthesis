@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-compiler',
-  version: '1.0.36',
+  version: '1.0.38',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md'

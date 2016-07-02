@@ -33,7 +33,7 @@ class dissectHtml {
     this.dissected = {
       head: '',
       body: '',
-      js: '//*synthesis*//\n\n',
+      js: '//*synthesis*//\n',
       tailJs:'', //tailJs is appened last
       bodyAttrs: {}
     };
@@ -64,7 +64,7 @@ class dissectHtml {
             }
             else{
 
-              self.dissected.js += "\n\n"+Synthesizer.generateJS(headContents,true) +"\n\n";
+              self.dissected.js += `\n${Synthesizer.generateJS(headContents,true)}\n`;
             }
             break;
             case "body":
@@ -83,7 +83,7 @@ class dissectHtml {
               self.dissected.body += bodyContents;
             }
             else{
-              self.dissected.js += "\n\n"+Synthesizer.generateJS(bodyContents) +"\n\n";
+              self.dissected.js += `\n${Synthesizer.generateJS(bodyContents)}\n`;
             }
             break;
           }
@@ -91,7 +91,7 @@ class dissectHtml {
         break;
       }
     };
-    this.dissected.js += "\n\n"+this.dissected.tailJs+"\n\n";
+    this.dissected.js += `\n${this.dissected.tailJs}\n`;
 
   }
   processChildNodes(childNodes){
@@ -169,22 +169,22 @@ class dissectHtml {
         return child;
       }
       else{
-        self.dissected.tailJs +=  `\n\nrequire('${importableUrl}');\n\n`;
+        self.dissected.tailJs +=  `\nrequire('${importableUrl}');\n`;
       }
     }
     else{
 
-      self.dissected.tailJs += "\n\n"+self.babelJs(parse5.serialize(child))+"\n\n";
+      self.dissected.tailJs += `\n${self.babelJs(parse5.serialize(child))}\n`;
     }
 
   }
 
   babelJs(js){
     const babelOptions = Babel.getDefaultOptions();
-    const prod = process.env.NODE_ENV ==="production";
+    //const prod = process.env.NODE_ENV ==="production";
     const external = this.sourceName.match(/(bower_components|node_modules)\//);
     const buildFile = this.sourceName === "imports/ui/build.html";
-    return (prod && !external && !buildFile ) ? Babel.compile(js, babelOptions).code : js;
+    return (!external && !buildFile ) ? Babel.compile(js, babelOptions).code : js;
   }
 
   importableUrl (url){
@@ -228,7 +228,7 @@ class dissectHtml {
 
             }
             const link = `require('${url}');`;
-            self.dissected.tailJs += "\n\n"+link+"\n\n";
+            self.dissected.tailJs += `\n${link}\n`;
 
             break;
             //Processing <link rel="stylesheet" href="filename.css">
