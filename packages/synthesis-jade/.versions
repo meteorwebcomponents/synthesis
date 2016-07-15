@@ -24,7 +24,7 @@ html-tools@1.0.10
 htmljs@1.0.10
 id-map@1.0.8
 jquery@1.11.9
-local-test:mwc:synthesis-jade@1.0.44
+local-test:mwc:synthesis-jade@1.0.45
 logging@1.0.14
 meteor@1.1.16
 minifier-js@1.1.13
@@ -34,7 +34,7 @@ modules-runtime@0.6.5
 mongo@1.1.9_1
 mongo-id@1.0.5
 mwc:synthesis-compiler@1.0.39
-mwc:synthesis-jade@1.0.44
+mwc:synthesis-jade@1.0.45
 npm-mongo@1.4.45
 observe-sequence@1.0.12
 ordered-dict@1.0.8
