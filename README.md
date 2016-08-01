@@ -255,7 +255,7 @@ Try to find out which package contains large number of js files. Delete unecessa
 
 Q: Is it possible to use npm instead of bower for loading polymer and components
 
-Ans : Yes there is. Refer [using polymer instead of bower](#using-polymer-from-npm-instead-of-bower)
+Ans : Yes there is. Refer [using npm instead of bower](#using-polymer-from-npm-instead-of-bower)
 
 Q: Can I use Polymer and blaze together?
 
