@@ -220,7 +220,9 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo)
 
 ### Kickstart Your Meteor Polymer projects
-[Kickstart a Meteor/Polymer project](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
+[Kickstart a Meteor/Polymer project - FlowRouter](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
+
+[KickStart Meteor/Polymer Project - Polymer App Route](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route)
 
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
 
