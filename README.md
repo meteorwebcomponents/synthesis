@@ -1,6 +1,8 @@
 # Synthesis is meteor + polymer
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/aruntk/meteorwebcomponents?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+[![Donate](https://dantheman827.github.io/images/donate-button.svg)](https://www.paypal.me/arunkumartk)
+
 ## About
 
 Synthesis helps you use polymer inside meteor.
