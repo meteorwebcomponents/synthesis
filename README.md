@@ -73,7 +73,9 @@ You can import html using
 
 2. `<link rel="import" href="./component.html"> `from html files
 
-> Please note that `import 'package/package.html;'` imports from node_modules directory while `<link rel="import" href="package/package.html">` is the same as `import "./package/package.html";`. This is kept like this to go through polymer components in which dependency files inside the same folder are imported as `<link rel="import" href="dependency.html">`
+> Please note that `import 'package/package.html;'` imports from node_modules directory while `<link rel="import" href="package/package.html">` is the same as `import "./package/package.html";`. This is kept like this to go through polymer components in which dependency files inside the same folder are imported as `<link rel="import" href="dependency.html">`. 
+
+> If you want to import scripts/stylesheets/html from public use `src="/path/to/my/file"`. `src="path/to/my/file"` is interpreted as `import "./path/to/my/file"`.
  
 Script
 
