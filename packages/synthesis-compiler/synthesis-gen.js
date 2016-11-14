@@ -1,13 +1,12 @@
-class _synthesizer{
-  constructor(settings){
+export class _synthesizer {
+  constructor(settings) {
     this.settings = settings;
   }
-  generateJS(html,toHead){
-    toHead = !!toHead;
+  generateJS(html, toHead) {
     const htmlStr = JSON.stringify(html);
     return `
-    Synthesis.render(${htmlStr},${toHead});
-    `
+    Synthesis.render(${htmlStr},${!!toHead});
+    `;
   }
 
 }
