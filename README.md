@@ -230,6 +230,13 @@ Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebco
 
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
 
+### Like it?
+
+:star: this repo
+
+### Found a bug?
+
+Raise an issue!
 
 ### TODO
 
