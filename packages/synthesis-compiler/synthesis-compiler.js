@@ -5,7 +5,13 @@ import path from 'path';
 import _ from 'lodash';
 import { Babel } from 'meteor/babel-compiler';
 import { Synthesizer } from './synthesis-gen.js';
-
+const getExtension = (fileName = '') => {
+  var a = filename.split('.');
+  if( a.length === 1 || ( a[0] === '' && a.length === 2 ) ) {
+    return '';
+  }
+  return a.pop();
+}
 export const parseHtml = (arg) => {
   const contents = arg.contents;
   const parsed = parse5.parse(contents);
@@ -139,19 +145,41 @@ class DissectHtml {
           return domModule;
         }
         case 'div': {
-          const attrs = _.filter(child.attrs, o => (o.name === 'hidden' || o.name === 'by-vulcanize'));
+          const divChild = child;
+          const attrs = _.filter(divChild.attrs, o => (o.name === 'hidden' || o.name === 'by-vulcanize'));
           if (attrs.length >= 2) {
-            const _childNodes = self.processChildNodes(child.childNodes);
+            const _childNodes = self.processChildNodes(divChild.childNodes);
             pushNodes = pushNodes.concat(_childNodes);
           } else {
-            return child;
+            if (divChild.childNodes) {
+              divChild.childNodes = self.processChildNodes(divChild.childNodes);
+            }
+            return divChild;
           }
         }
           break;
         case '#comment':
           break;
-        default:
-          return child;
+
+        default: {
+          const defChild = child;
+          const attrs = _.map(defChild.attrs, (o) => {
+            // all src values without [[*]] and {{*}}
+            if ((o.name === 'src' || o.name === 'src$') && o.value && !o.value.match(/({{|\[\[)\s*[\w\.]+\s*(}}|\]\])/g)) {
+              const url = self.importableUrl(o.value);
+              // console.log(defChild.nodeName, o, url);
+              if (url) {
+                o.value = path.resolve(path.dirname(`/${self.sourceName}`), o.value);
+              }
+            }
+            return o;
+          });
+          defChild.attrs = attrs;
+          if (defChild.childNodes) {
+            defChild.childNodes = self.processChildNodes(defChild.childNodes);
+          }
+          return defChild;
+        }
       }
       return null;
     }));
