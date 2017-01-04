@@ -205,11 +205,11 @@ class DissectHtml {
   babelJs(js) {
     const babelOptions = Babel.getDefaultOptions();
     // const prod = process.env.NODE_ENV ==='production';
-    // const external = this.sourceName.match(/(bower_components|node_modules)\//);
+    const external = this.sourceName.match(/node_modules\//);
     // const buildFile = this.sourceName === 'imports/ui/build.html';
     // return (!external && !buildFile) ? Babel.compile(js, babelOptions).code : js;
     try {
-      return Babel.compile(js, babelOptions).code; 
+      return !external ? Babel.compile(js, babelOptions).code: js; 
     }
     catch (err) {
       console.error(`Error in ${this.sourceName}`);
