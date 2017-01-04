@@ -34,7 +34,10 @@ Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 Install synthesis
 
-`meteor add mwc:synthesis`
+```sh
+meteor add mwc:synthesis #compiles html files
+meteor add mwc:synthesis-file #compiles asset files for <img src="image.png"> to work.
+```
 
 synthesis is a meteor 1.3+ package. for 1.2 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
 
@@ -212,6 +215,23 @@ Use it from js files as
 import "@polymer/paper-button/paper-button.html";
 ```
 >Please note that the @polymer packages are still in testing stage. And the polymer version is an older one.
+
+### Assets
+
+```html
+<img src="sample-image.png"> <!--Works!!-->
+<iron-image src="sample-image.png"><iron-image> <!--Works!!-->
+<any-element src="sample-image.png"><any-element> <!--Works!!-->
+<any-element src="[[image]]"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+<any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+``` 
+works inside html.
+
+File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-file/plugin/synthesis-file.js#L19. 
+
+Feel free to add pr's if you want to supports more file types.
+
+Relevant code https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-compiler/synthesis-compiler.js#L166-L176 .
 
 ### Demo
 
