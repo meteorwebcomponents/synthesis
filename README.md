@@ -34,7 +34,10 @@ Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 Install synthesis
 
-`meteor add mwc:synthesis`
+```sh
+meteor add mwc:synthesis #compiles html files
+meteor add mwc:synthesis-file #compiles asset files for <img src="image.png"> to work.
+```
 
 synthesis is a meteor 1.3+ package. for 1.2 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
 
