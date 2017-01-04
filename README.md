@@ -213,6 +213,23 @@ import "@polymer/paper-button/paper-button.html";
 ```
 >Please note that the @polymer packages are still in testing stage. And the polymer version is an older one.
 
+### Assets
+
+```html
+<img src="sample-image.png"> <!--Works!!-->
+<iron-image src="sample-image.png"><iron-image> <!--Works!!-->
+<any-element src="sample-image.png"><any-element> <!--Works!!-->
+<any-element src="[[image]]"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+<any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+``` 
+works inside html.
+
+File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-file/plugin/synthesis-file.js#L19. 
+
+Feel free to add pr's if you want to supports more file types.
+
+Relevant code https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-compiler/synthesis-compiler.js#L166-L176 .
+
 ### Demo
 
 #####Using Bower
