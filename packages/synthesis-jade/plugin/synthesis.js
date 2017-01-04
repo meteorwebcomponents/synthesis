@@ -1,6 +1,5 @@
 import { parseHtml, handleTags } from 'meteor/mwc:synthesis-compiler';
 import { CachingHtmlCompiler } from 'meteor/caching-html-compiler';
-import { TemplatingTools } from 'meteor/templating-tools';
 import jade from 'jade';
 
 class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
@@ -34,13 +33,6 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
       const result = this.tagHandlerFunc(tags);
       return result;
     } catch (e) {
-      if (e instanceof TemplatingTools.CompileError) {
-        inputFile.error({
-          message: e.message,
-          line: e.line,
-        });
-        return null;
-      }
       throw e;
     }
   }
