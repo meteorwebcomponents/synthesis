@@ -219,11 +219,16 @@ import "@polymer/paper-button/paper-button.html";
 ### Assets
 
 ```html
+<!-- imports/ui/path/to/element.html -->
 <img src="sample-image.png"> <!--Works!!-->
 <iron-image src="sample-image.png"><iron-image> <!--Works!!-->
-<any-element src="sample-image.png"><any-element> <!--Works!!-->
+<any-element src="sample-image.png"><any-element> <!--Works!! src = imports/ui/path/to/sample-image.png -->
+<any-element src="../sample-image.png"><any-element> <!--Works!! src = imports/ui/path/sample-image.png-->
 <any-element src="[[image]]"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
 <any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+
+<!-- files in public/ folder -->
+<any-element src="/sample-image.png"><any-element> <!--Works!! src = /sample-image.png -->
 ``` 
 works inside html.
 
