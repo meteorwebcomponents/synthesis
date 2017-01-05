@@ -221,6 +221,7 @@ import "@polymer/paper-button/paper-button.html";
 ### Assets
 
 ```html
+works inside html.
 <!-- imports/ui/path/to/element.html -->
 <img src="sample-image.png"> <!--Works!!-->
 <iron-image src="sample-image.png"><iron-image> <!--Works!!-->
@@ -230,9 +231,22 @@ import "@polymer/paper-button/paper-button.html";
 <any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
 
 <!-- files in public/ folder -->
-<any-element src="/sample-image.png"><any-element> <!--Works!! src = /sample-image.png -->
-```  
-works inside html.
+<any-element src="/sample-image.png"><any-element> <!--Works!! file should be in public folder src = /sample-image.png -->
+works inside css.
+```
+
+```css
+
+/*imports/ui/path/to/element.html inside style tag  or  imports/ui/path/to/element.css */
+background: url(path/to/image.png); /* Works!!. */
+property: url(relative/path/to/image.png); /* Works!!. */
+property: url(var(--url-var)); /* Does not work unless --url-var = absolute path imports/ui/path/to/image.png */
+/* if you want to use variables use 
+--url-var = url(path/to/url);
+property: var(--url-var);
+*/
+property: url(/path/to/image.png); /* Works!!. if file is in public folder */
+```
 
 File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-file/plugin/synthesis-file.js#L19. 
 
@@ -308,3 +322,4 @@ But there are some compatibility issues https://forums.meteor.com/t/polymer-mete
 Q: I love blaze's template level subscriptions and spacebars. I dont want to lose these features when I port my app to polymer. Any help?
 
 Ans : In my experience I find nothing that polymer cannot do which blaze can. Polymer is very easy to learn and while porting your app you'll find yourself copy pasting most of your code. For every blaze function they have solutions in polymer. We have got you covered when it comes to meteor data and subscriptions (including template level subs) Refer [mixin](https://github.com/meteorwebcomponents/mixin) . 
+

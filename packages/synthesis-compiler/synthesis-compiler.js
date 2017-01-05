@@ -265,8 +265,8 @@ class DissectHtml {
     return null;
   }
   _changeRelUrl(inpUrl) {
-    // avoids [[prop]] and {{prop}}
-    if (inpUrl && !inpUrl.match(/({{|\[\[)\s*[\w\.]+\s*(}}|\]\])/g)) {
+    // avoids var(--url-variable);
+    if (inpUrl && !inpUrl.match(/var\(.*?\)/g)) {
       // avoids absolute & remote urls
       const url = this.importableUrl(inpUrl);
       if (url) {
@@ -282,7 +282,7 @@ class DissectHtml {
 
     const processed = text.replace(/url\(.*?\)/ig, function(a) {
       // to get -> filepath from url(filepath), url('filepath') and url("filepath")
-      const processedUrl = a.replace(/\(['|"]?([^)]+?)['|"]?\)/, function(_url, inpUrl) {
+      const processedUrl = a.replace(/\(['|"]?([^)]+?)['|"]?\)/i, function(_url, inpUrl) {
         return `(${self._changeRelUrl(inpUrl)})`;
       });
       return processedUrl;

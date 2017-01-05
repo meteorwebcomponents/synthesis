@@ -221,6 +221,7 @@ import "@polymer/paper-button/paper-button.html";
 ### Assets
 
 ```html
+works inside html.
 <!-- imports/ui/path/to/element.html -->
 <img src="sample-image.png"> <!--Works!!-->
 <iron-image src="sample-image.png"><iron-image> <!--Works!!-->
@@ -230,9 +231,22 @@ import "@polymer/paper-button/paper-button.html";
 <any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
 
 <!-- files in public/ folder -->
-<any-element src="/sample-image.png"><any-element> <!--Works!! src = /sample-image.png -->
-``` 
-works inside html.
+<any-element src="/sample-image.png"><any-element> <!--Works!! file should be in public folder src = /sample-image.png -->
+works inside css.
+```
+
+```css
+
+/*imports/ui/path/to/element.html inside style tag  or  imports/ui/path/to/element.css */
+background: url(path/to/image.png); /* Works!!. */
+property: url(relative/path/to/image.png); /* Works!!. */
+property: url(var(--url-var)); /* Does not work unless --url-var = absolute path imports/ui/path/to/image.png */
+/* if you want to use variables use 
+--url-var = url(path/to/url);
+property: var(--url-var);
+*/
+property: url(/path/to/image.png); /* Works!!. if file is in public folder */
+```
 
 File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-file/plugin/synthesis-file.js#L19. 
 
