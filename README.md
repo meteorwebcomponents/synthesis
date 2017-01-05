@@ -232,8 +232,9 @@ works inside html.
 
 <!-- files in public/ folder -->
 <any-element src="/sample-image.png"><any-element> <!--Works!! file should be in public folder src = /sample-image.png -->
-works inside css.
+
 ```
+works inside css also.
 
 ```css
 
