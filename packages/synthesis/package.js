@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis',
-  version: '1.2.2',
+  version: '1.2.3',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
@@ -9,7 +9,7 @@ Package.describe({
 Package.onUse((api) => {
   api.versionsFrom('1.3');
   api.use('ecmascript');
-  api.use('mwc:synthesis-file@0.1.2');
+  api.use('mwc:synthesis-file@0.1.3');
   api.use('isobuild:compiler-plugin@1.0.0');
   api.addFiles('synthesis-client.js', 'client');
   api.export('Synthesis', ['client']);
