@@ -5,13 +5,7 @@ import path from 'path';
 import _ from 'lodash';
 import { Babel } from 'meteor/babel-compiler';
 import { Synthesizer } from './synthesis-gen.js';
-const getExtension = (fileName = '') => {
-  var a = filename.split('.');
-  if( a.length === 1 || ( a[0] === '' && a.length === 2 ) ) {
-    return '';
-  }
-  return a.pop();
-}
+
 export const parseHtml = (arg) => {
   const contents = arg.contents;
   const parsed = parse5.parse(contents);
