@@ -265,8 +265,8 @@ class DissectHtml {
     return null;
   }
   _changeRelUrl(inpUrl) {
-    // avoids var(--url-variable);
-    if (inpUrl && !inpUrl.match(/var\(.*?\)/g)) {
+    // avoids var(--url-variable) and bound properties [[prop]] and {{prop}};
+    if (inpUrl && !inpUrl.match(/var\(.*?\)|({{|\[\[)\s*[\w\.]+\s*(}}|\]\])/ig)) {
       // avoids absolute & remote urls
       const url = this.importableUrl(inpUrl);
       if (url) {

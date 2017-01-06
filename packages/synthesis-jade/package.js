@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-jade',
-  version: '1.3.0',
+  version: '1.3.1',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
@@ -25,7 +25,7 @@ Package.onTest((api) => {
 Package.registerBuildPlugin({
   name: 'synthesis-jade',
   use: [
-    'mwc:synthesis-compiler@1.3.0',
+    'mwc:synthesis-compiler@1.3.1',
     'caching-html-compiler@1.0.7',
     'ecmascript@0.4.1',
   ],
