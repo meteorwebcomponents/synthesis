@@ -1,6 +1,6 @@
 import { parseHtml, handleTags } from 'meteor/mwc:synthesis-compiler';
 import { CachingHtmlCompiler } from 'meteor/caching-html-compiler';
-import jade from 'jade';
+import pug from 'pug';
 
 class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 
@@ -22,7 +22,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
       return null;
     }
     try {
-      const fn = jade.compile(contents, {
+      const fn = pug.compile(contents, {
         filename: inputFile.getPathInPackage(),
       });
       const parsedJade = fn();
@@ -42,5 +42,5 @@ Plugin.registerCompiler({
   extensions: ['pug'],
   archMatching: 'web',
   isTemplate: true,
-}, () => new PolymerCachingHtmlCompiler('synthesis-jade', parseHtml, handleTags));
+}, () => new PolymerCachingHtmlCompiler('synthesis-pug', parseHtml, handleTags));
 

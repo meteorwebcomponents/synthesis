@@ -31,9 +31,9 @@ Keeps all your components in imports folder
 
 You can import html using 
 
-1. Meteor's `import './component.jade';` 
+1. Meteor's `import './component.pug';` 
 
-2. `<link rel="import" href="./component.jade"> `
+2. `<link rel="import" href="./component.pug"> `
  
 Script
 1. `<script>yourscript goes here</script> `
@@ -49,8 +49,8 @@ Add bower_components to any folder inside imports directory.
 
 Assume bower directory is imports/ui/bower_components
 
-```jade
-<!-- imports/ui/component/test-element.jade -->
+```pug
+<!-- imports/ui/component/test-element.pug -->
 
     link(rel='import', href='test-element2.html')
     // imports/ui/component/test-element.html Gets imported
@@ -77,7 +77,7 @@ color:red;
 ```
 ```js
 // imports/ui/component/test-element.js
-import './test-element.jade';
+import './test-element.pug';
 
 Polymer({
   is:"test-element",
@@ -104,7 +104,7 @@ Polymer({
 ```
 
 ```html
-<!-- client/index.jade (you can use any filename) -->
+<!-- client/index.pug (you can use any filename) -->
   head
     title Synthesis
   body.fullbleed
@@ -152,7 +152,7 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 
 ### TODO
 
-- [  ]  extend file1.jade
+- [  ]  extend file1.pug
 
 ### Social
 
