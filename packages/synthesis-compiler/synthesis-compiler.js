@@ -175,8 +175,8 @@ class DissectHtml {
     }));
     return processedNodes.concat(pushNodes);
   }
-  processStyle(css) {
-    return this._changeCssUrls(polyclean.stripCss(css));
+  processStyle(css, cssBasePath) {
+    return this._changeCssUrls(polyclean.stripCss(css), cssBasePath);
   }
   processScripts(child) {
     const self = this;
@@ -233,7 +233,8 @@ class DissectHtml {
               if (typeAttr) {
                 switch (typeAttr.value) {
                   case 'css':
-                    return self.processCssImport(hrefAttr, child);
+                    const styleChild = self.processCssImport(hrefAttr, child);
+                    return styleChild;
                   default:
                     break;
                 }
@@ -258,26 +259,29 @@ class DissectHtml {
     }
     return null;
   }
-  _changeRelUrl(inpUrl) {
+  _changeRelUrl(inpUrl, basePath) {
+    if(basePath) {
+      console.log(basePath, inpUrl);
+    }
     // avoids var(--url-variable) and bound properties [[prop]] and {{prop}};
     if (inpUrl && !inpUrl.match(/var\(.*?\)|({{|\[\[)\s*[\w\.]+\s*(}}|\]\])/ig)) {
       // avoids absolute & remote urls
       const url = this.importableUrl(inpUrl);
       if (url) {
-        return path.resolve(path.dirname(`/${this.sourceName}`), inpUrl);
+        return path.resolve(path.dirname((basePath || `/${this.sourceName}`)), inpUrl);
       }
     }
     return inpUrl;
 
   }
-  _changeCssUrls(text) {
+  _changeCssUrls(text, cssBasePath) {
     const self = this;
     // to get -> property: url(filepath)
 
     const processed = text.replace(/url\(.*?\)/ig, function(a) {
       // to get -> filepath from url(filepath), url('filepath') and url("filepath")
       const processedUrl = a.replace(/\(['|"]?([^)]+?)['|"]?\)/i, function(_url, inpUrl) {
-        return `(${self._changeRelUrl(inpUrl)})`;
+        return `(${self._changeRelUrl(inpUrl, cssBasePath)})`;
       });
       return processedUrl;
     });
@@ -288,8 +292,9 @@ class DissectHtml {
     // checks if file exists
     if (fs.existsSync(url)) {
       const contents = fs.readFileSync(url, 'utf8');
+      const cssBasePath = path.resolve(path.dirname(`/${this.sourceName}`), hrefAttr.value);
       // css is inlined
-      const minified = this._changeCssUrls(this.processStyle(contents));
+      const minified = this.processStyle(contents, cssBasePath);
       if (minified) {
         // link tag is replaced with style tag
         return _.extend(child, {

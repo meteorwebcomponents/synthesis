@@ -16,7 +16,10 @@ SynthesisFileCompiler.prototype.processFilesForTarget = function (files) {
   });
 };
 
-const extensions = ['png', 'jpg', 'jpeg', 'gif', 'tif', 'tiff', 'svg'];
+const img = ['png', 'jpg', 'jpeg', 'gif', 'tif', 'tiff', 'svg'];
+const font = ['ttf', 'woff', 'eot', 'otf', 'woff2'];
+const extensions = [...img, ...font];
+
 Plugin.registerCompiler({
   extensions,
   archMatching: 'web',

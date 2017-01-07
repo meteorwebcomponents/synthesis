@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-file',
-  version: '0.1.3',
+  version: '0.1.4',
   summary: 'file handling for synthesis',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
