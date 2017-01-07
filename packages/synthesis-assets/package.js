@@ -1,7 +1,7 @@
 Package.describe({
-  name: 'mwc:synthesis-file',
-  version: '0.1.4',
-  summary: 'file handling for synthesis',
+  name: 'mwc:synthesis-assets',
+  version: '0.1.5',
+  summary: 'assets handling for synthesis',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
 });
@@ -13,12 +13,12 @@ Package.onUse((api) => {
 });
 
 Package.registerBuildPlugin({
-  name: 'synthesis-file',
+  name: 'synthesis-assets',
   use: [
     'caching-html-compiler@1.0.7',
     'ecmascript@0.4.1',
   ],
   sources: [
-    'plugin/synthesis-file.js',
+    'plugin/synthesis-assets.js',
   ],
 });

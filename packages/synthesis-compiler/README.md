@@ -1,6 +1,8 @@
 # Synthesis is meteor + polymer
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/aruntk/meteorwebcomponents?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+[![Donate](https://dantheman827.github.io/images/donate-button.svg)](https://www.paypal.me/arunkumartk)
+
 ## About
 
 Synthesis helps you use polymer inside meteor.
@@ -18,6 +20,7 @@ Does not use any regex to parse html. :)
 2. Handles external script files (script src)
 3. Handles external css files (link rel stylesheet)
 4. Handles template tags.
+5. Removes comments and unecessary whitespaces.
 5. Handles loading order of html and js inside the polymer files
 4. Adds components to document during runtime.
 
@@ -31,7 +34,11 @@ Remove `blaze-html-templates` (or remove the html compiler you are using).
 
 Install synthesis
 
-`meteor add mwc:synthesis`
+```sh
+meteor add mwc:synthesis #compiles html files
+# synthesis-assets is optional. If you want to handle relative asset paths.
+meteor add mwc:synthesis-assets #compiles assets for <img src="image.png"> to work.
+```
 
 synthesis is a meteor 1.3+ package. for 1.2 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
 
@@ -41,21 +48,39 @@ You can optionally use these packages from meteorwebcomponents
 * [mwc:router](https://github.com/meteorwebcomponents/router) - Flowrouter with polymer.
 * [mwc:layout](https://github.com/meteorwebcomponents/layout) - Polymer layout renderer.
 
+
 ## Usage
+
+### Polymer Settings
+
+Create client/lib/settings.js
+
+Why lib directory ? Settings code should run before anything else. 
+
+```js
+/* client/lib/settings.js */
+window.Polymer = {
+  //dom: 'shadow',
+  lazyRegister: true
+};
+```
+### App Structure
 
 Refer http://guide.meteor.com
 
 Application Structure http://guide.meteor.com/structure.html.
 
-Keeps all your components in imports folder 
+Keep all your components in imports folder 
 
 You can import html using 
 
-1. Meteor's `import './component.html';` from js files
+1. `import './component.html';` from js files
 
 2. `<link rel="import" href="./component.html"> `from html files
 
-> Please note that `import 'package/package.html;'` imports from node_modules directory while `<link rel="import" href="package/package.html">` is the same as `import "./package/package.html";`. This is kept like this to go through polymer components in which dependency files inside the same folder are imported as `<link rel="import" href="dependency.html">`
+> Please note that `import 'package/package.html;'` imports from node_modules directory while `<link rel="import" href="package/package.html">` is the same as `import "./package/package.html";`. This is kept like this to go through polymer components in which dependency files inside the same folder are imported as `<link rel="import" href="dependency.html">`. 
+
+> If you want to import scripts/stylesheets/html from public use `src="/path/to/my/file"`. `src="path/to/my/file"` is interpreted as `import "./path/to/my/file"`.
  
 Script
 
@@ -155,9 +180,7 @@ import "../imports/ui/bower_components/webcomponentsjs/webcomponents-lite.min.js
 import "../imports/ui/bower_components/polymer/polymer.html";
 
 ```
-Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. 
-
-[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
+Best practice is to reduce the number of files in the imports directory. Avoid adding unecessary components, helps in lowering the build time. Refer the [FAQ](#faq)
 
 A sample bower.json (imports/ui/bower.json)
 
@@ -195,6 +218,44 @@ import "@polymer/paper-button/paper-button.html";
 ```
 >Please note that the @polymer packages are still in testing stage. And the polymer version is an older one.
 
+### Assets
+
+works inside html.
+
+```html
+<!-- imports/ui/path/to/element.html -->
+<img src="sample-image.png"> <!--Works!!-->
+<iron-image src="sample-image.png"><iron-image> <!--Works!!-->
+<any-element src="sample-image.png"><any-element> <!--Works!! src = imports/ui/path/to/sample-image.png -->
+<any-element src="../sample-image.png"><any-element> <!--Works!! src = imports/ui/path/sample-image.png-->
+<any-element src="[[image]]"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+<any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
+
+<!-- assets in public/ folder -->
+<any-element src="/sample-image.png"><any-element> <!--Works!! asset should be in public folder src = /sample-image.png -->
+
+```
+works inside css also.
+
+```css
+
+/*imports/ui/path/to/element.html inside style tag  or  imports/ui/path/to/element.css */
+background: url(path/to/image.png); /* Works!!. */
+property: url(relative/path/to/image.png); /* Works!!. */
+property: url(var(--url-var)); /* Does not work unless --url-var = absolute path imports/ui/path/to/image.png */
+/* if you want to use variables use 
+--url-var = url(path/to/url);
+property: var(--url-var);
+*/
+property: url(/path/to/image.png); /* Works!!. if asset is in public folder */
+```
+
+File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-assets/plugin/synthesis-assets.js#L19. 
+
+Feel free to add pr's if you want to supports more file types.
+
+Relevant code https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-compiler/synthesis-compiler.js#L166-L176 .
+
 ### Demo
 
 #####Using Bower
@@ -206,13 +267,21 @@ Check out the [Synthesis Demo](https://github.com/meteorwebcomponents/synthesis-
 Check out the [synthesis-meteor-polymer-npm-demo](https://github.com/meteorwebcomponents/synthesis-meteor-polymer-npm-demo)
 
 ### Kickstart Your Meteor Polymer projects
-[Kickstart a Meteor/Polymer project](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
+[Kickstart a Meteor/Polymer project - FlowRouter](https://github.com/aruntk/kickstart-meteor-polymer) with Synthesis.
+
+[KickStart Meteor/Polymer Project - Polymer App Route](https://github.com/aruntk/kickstart-meteor-polymer-with-app-route)
 
 ![synthesis1](https://cloud.githubusercontent.com/assets/6007432/14216652/9da7131a-f867-11e5-9f84-6dd75d60dd45.gif)
 
+### Like it?
+
+:star: this repo
+
+### Found a bug?
+
+Raise an issue!
 
 ### TODO
-
 
 ### Social
 
@@ -222,3 +291,36 @@ Meteor forum - https://forums.meteor.com/t/polymer-meteor-support-with-meteor-we
 
 > NO NEED to use any VULCANIZING tools. Synthesis handles everything
 
+### FAQ
+
+Q:  When I tried to set `window.Polymer = {lazyRegister:true,dom:"shadow"}` it resulted in error. 
+
+Ans : Refer [polymer settings](#polymer-settings)
+
+Q:  When I added (a) bower component(s) build time became painstakingly high. 
+
+Ans : The component(s) you've added might have many js files. meteor ecmascripts gets frozen/takes a long time when the number of js files are very high. Refer the issue https://github.com/meteor/meteor/issues/6859. In my testings with 300 html files synthesis ran pretty fast. Its the meteor js handlers which create this issue.
+
+In console (pwd = /imports/ui)
+```sh
+find bower_components -name \*.js | wc -l
+```
+Try to find out which package contains large number of js files. Delete unecessary files and keep a local copy. 
+
+[bower-installer](https://github.com/blittle/bower-installer) can be used instead of bower to bring in just the files that you need for your project. Significantly lowers the build time.
+
+Q: Is it possible to use npm instead of bower for loading polymer and components
+
+Ans : Yes there is. Refer [using npm instead of bower](#using-polymer-from-npm-instead-of-bower)
+
+Q: Can I use Polymer and blaze together?
+
+Ans: You can. If you want to use blaze along with synthesis use **[mwc:blaze-html-templating](https://github.com/meteorwebcomponents/blaze-html-templates)** . demo - [blaze+polymer](https://github.com/meteorwebcomponents/synthesis-demo/tree/blaze-polymer) 
+
+Use blaze.html extension for blaze files.
+
+But there are some compatibility issues https://forums.meteor.com/t/polymer-meteor-support-with-meteor-webcomponents-packages/20536/30?u=aruntk
+
+Q: I love blaze's template level subscriptions and spacebars. I dont want to lose these features when I port my app to polymer. Any help?
+
+Ans : In my experience I find nothing that polymer cannot do which blaze can. Polymer is very easy to learn and while porting your app you'll find yourself copy pasting most of your code. For every blaze function they have solutions in polymer. We have got you covered when it comes to meteor data and subscriptions (including template level subs) Refer [mixin](https://github.com/meteorwebcomponents/mixin) . 

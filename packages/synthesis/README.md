@@ -36,8 +36,8 @@ Install synthesis
 
 ```sh
 meteor add mwc:synthesis #compiles html files
-# synthesis-file is optional. If you want to handle relative file paths.
-meteor add mwc:synthesis-file #compiles asset files for <img src="image.png"> to work.
+# synthesis-assets is optional. If you want to handle relative asset paths.
+meteor add mwc:synthesis-assets #compiles assets for <img src="image.png"> to work.
 ```
 
 synthesis is a meteor 1.3+ package. for 1.2 support use [mwc:compiler](https://github.com/meteorwebcomponents/compiler)
@@ -220,8 +220,9 @@ import "@polymer/paper-button/paper-button.html";
 
 ### Assets
 
-```html
 works inside html.
+
+```html
 <!-- imports/ui/path/to/element.html -->
 <img src="sample-image.png"> <!--Works!!-->
 <iron-image src="sample-image.png"><iron-image> <!--Works!!-->
@@ -230,10 +231,11 @@ works inside html.
 <any-element src="[[image]]"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
 <any-element src="{{image}}"><any-element> <!--Does not work!! if you want this to work use image = path/from/root/to/image.png -->
 
-<!-- files in public/ folder -->
-<any-element src="/sample-image.png"><any-element> <!--Works!! file should be in public folder src = /sample-image.png -->
-works inside css.
+<!-- assets in public/ folder -->
+<any-element src="/sample-image.png"><any-element> <!--Works!! asset should be in public folder src = /sample-image.png -->
+
 ```
+works inside css also.
 
 ```css
 
@@ -245,10 +247,10 @@ property: url(var(--url-var)); /* Does not work unless --url-var = absolute path
 --url-var = url(path/to/url);
 property: var(--url-var);
 */
-property: url(/path/to/image.png); /* Works!!. if file is in public folder */
+property: url(/path/to/image.png); /* Works!!. if asset is in public folder */
 ```
 
-File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-file/plugin/synthesis-file.js#L19. 
+File types we supports https://github.com/meteorwebcomponents/synthesis/blob/master/packages/synthesis-assets/plugin/synthesis-assets.js#L19. 
 
 Feel free to add pr's if you want to supports more file types.
 
@@ -322,4 +324,3 @@ But there are some compatibility issues https://forums.meteor.com/t/polymer-mete
 Q: I love blaze's template level subscriptions and spacebars. I dont want to lose these features when I port my app to polymer. Any help?
 
 Ans : In my experience I find nothing that polymer cannot do which blaze can. Polymer is very easy to learn and while porting your app you'll find yourself copy pasting most of your code. For every blaze function they have solutions in polymer. We have got you covered when it comes to meteor data and subscriptions (including template level subs) Refer [mixin](https://github.com/meteorwebcomponents/mixin) . 
-
