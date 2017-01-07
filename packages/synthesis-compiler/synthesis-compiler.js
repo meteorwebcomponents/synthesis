@@ -260,9 +260,6 @@ class DissectHtml {
     return null;
   }
   _changeRelUrl(inpUrl, basePath) {
-    if(basePath) {
-      console.log(basePath, inpUrl);
-    }
     // avoids var(--url-variable) and bound properties [[prop]] and {{prop}};
     if (inpUrl && !inpUrl.match(/var\(.*?\)|({{|\[\[)\s*[\w\.]+\s*(}}|\]\])/ig)) {
       // avoids absolute & remote urls
