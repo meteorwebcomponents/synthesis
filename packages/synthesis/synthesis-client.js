@@ -6,10 +6,12 @@ export class _synthesizer {
     if (document.body) {
       const el = head ? document.head : document.body;
       const div = document.createElement('div');
+      const docFrag = document.createDocumentFragment();
       div.innerHTML = str;
       while (div.children.length > 0) {
-        el.appendChild(div.children[0]);
+        docFrag.appendChild(div.children[0]);
       }
+      el.appendChild(docFrag);
     } else {
       document.write(str);
     }
