@@ -39,7 +39,7 @@ class PolymerCachingHtmlCompiler extends CachingHtmlCompiler {
 }
 
 Plugin.registerCompiler({
-  extensions: ['jade'],
+  extensions: ['pug'],
   archMatching: 'web',
   isTemplate: true,
 }, () => new PolymerCachingHtmlCompiler('synthesis-jade', parseHtml, handleTags));

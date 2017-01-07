@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-compiler',
-  version: '1.3.5',
+  version: '1.3.6',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
@@ -22,7 +22,7 @@ Package.onTest((api) => {
 });
 
 Npm.depends({
-  lodash: '4.17.0',
+  lodash: '4.17.4',
   polyclean: '1.3.1',
-  parse5: '2.2.3',
+  parse5: '3.0.1',
 });

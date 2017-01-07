@@ -1,6 +1,6 @@
 Package.describe({
-  name: 'mwc:synthesis-jade',
-  version: '1.3.5',
+  name: 'mwc:synthesis-pug',
+  version: '1.3.6',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
@@ -17,15 +17,15 @@ Package.onUse((api) => {
 Package.onTest((api) => {
   api.use('ecmascript');
   api.use('tinytest');
-  api.use('mwc:synthesis-jade');
+  api.use('mwc:synthesis-pug');
   api.mainModule('synthesis-jade-tests.js');
 });
 
 
 Package.registerBuildPlugin({
-  name: 'synthesis-jade',
+  name: 'synthesis-pug',
   use: [
-    'mwc:synthesis-compiler@1.3.4',
+    'mwc:synthesis-compiler@1.3.6',
     'caching-html-compiler@1.0.7',
     'ecmascript@0.4.1',
   ],
@@ -33,6 +33,6 @@ Package.registerBuildPlugin({
     'plugin/synthesis.js',
   ],
   npmDependencies: {
-    jade: '1.11.0',
+    pug: '1.11.0',
   },
 });
