@@ -277,7 +277,7 @@ class DissectHtml {
 
     const processed = text.replace(/url\(['|"]?([^)]+?)['|"]?\)/ig, function(_u, url) {
       // to get -> filepath from url(filepath), url('filepath') and url("filepath")
-      return `url(${self._changeRelUrl(inpUrl, cssBasePath)})`;
+      return `url(${self._changeRelUrl(url, cssBasePath)})`;
     });
     return processed;
   }
