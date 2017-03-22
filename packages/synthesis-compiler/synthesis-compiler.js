@@ -3,7 +3,6 @@ import polyclean from 'polyclean';
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
-import { Babel } from 'meteor/babel-compiler';
 import { Synthesizer } from './synthesis-gen.js';
 
 export const parseHtml = (arg) => {
@@ -188,23 +187,9 @@ class DissectHtml {
       }
       self.dissected.tailJs += `\nrequire('${importableUrl}');\n`;
     } else {
-      self.dissected.tailJs += `\n${self.babelJs(parse5.serialize(child))}\n`;
+      self.dissected.tailJs += `\n${parse5.serialize(child)}\n`;
     }
     return null;
-  }
-  babelJs(js) {
-    const babelOptions = Babel.getDefaultOptions();
-    // const prod = process.env.NODE_ENV ==='production';
-    const external = this.sourceName.match(/node_modules\//);
-    // const buildFile = this.sourceName === 'imports/ui/build.html';
-    // return (!external && !buildFile) ? Babel.compile(js, babelOptions).code : js;
-    try {
-      return !external ? Babel.compile(js, babelOptions).code: js; 
-    }
-    catch (err) {
-      console.error(`Error in ${this.sourceName}`);
-      console.error(err);
-    }
   }
 
   importableUrl(url) {
