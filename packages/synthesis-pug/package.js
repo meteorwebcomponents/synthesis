@@ -1,6 +1,6 @@
 Package.describe({
   name: 'mwc:synthesis-pug',
-  version: '1.3.9',
+  version: '2.0.0-beta',
   summary: 'Synthesis is meteor + polymer',
   git: 'https://github.com/meteorwebcomponents/synthesis',
   documentation: 'README.md',
@@ -25,7 +25,7 @@ Package.onTest((api) => {
 Package.registerBuildPlugin({
   name: 'synthesis-pug',
   use: [
-    'mwc:synthesis-compiler@1.3.8',
+    'mwc:synthesis-compiler@2.0.0-beta',
     'caching-html-compiler@1.0.7',
     'ecmascript@0.4.1',
   ],
